@@ -585,6 +585,9 @@ function render(){
         <button id="migrar" style="margin-left:8px">Subirlos a la nube</button></div>`:""}
       ${MODO==="nube"?`<div class="priv"><b>Registro compartido en la nube.</b> Lo que guarde aquí lo ve todo el equipo
       desde cualquier navegador, con historial de recalificaciones por fideicomiso.</div>`
+      :MODO==="login"||MODO==="cargando"?`<div class="priv"><b>Registro compartido en la nube.</b> Inicie sesión
+      con el usuario que le asignaron para consultar y guardar en el registro del equipo. Sin sesión,
+      la app solo permite calcular en pantalla.</div>`
       :`<div class="priv"><b>Los datos no se comparten.</b> Lo que captura queda solo en este navegador
       (nada se guarda en la página ni lo ve quien más abra el enlace). Para conservarlo o pasarlo al Excel,
       use <b>Exportar CSV</b> o <b>Respaldar</b>. Quien abra la app la encuentra en blanco.</div>`}
