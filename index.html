@@ -196,9 +196,13 @@ function partesLvl(n){return n<=3?1:n<=6?2:n<=10?3:5;}
 let FILTRO="";
 // ---------- Estado ----------
 // ====== MODO NUBE (Firebase) — pegar el firebaseConfig para activarlo ======
-const FB_CONFIG=null; /* Ejemplo:
-const FB_CONFIG={apiKey:"...",authDomain:"xxx.firebaseapp.com",projectId:"xxx",
-  storageBucket:"xxx.appspot.com",messagingSenderId:"...",appId:"..."};
+const FB_CONFIG={apiKey:"AIzaSyArT8y10gP3R9vDWnrAwcxmmZql0rn211o",
+  authDomain:"calificador-fiduciario.firebaseapp.com",
+  projectId:"calificador-fiduciario",
+  storageBucket:"calificador-fiduciario.firebasestorage.app",
+  messagingSenderId:"14955104766",
+  appId:"1:14955104766:web:3969dafc63b3aa5e5158af"};
+/* Nube activada — proyecto Firebase: calificador-fiduciario.
 Requiere en la consola Firebase: Authentication → Email/contraseña con los usuarios del equipo,
 y Firestore con reglas: allow read, write: if request.auth != null (colección fideicomisos). */
 let MODO="local",USER=null,DB=null,UNSUB=null,NUBE_MSG="";
