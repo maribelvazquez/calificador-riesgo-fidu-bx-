@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.5 — 2026-08-27
+- Modo nube (Firebase Auth + Firestore), bimodal: con firebaseConfig pegado, el registro es compartido para todo el equipo, con login por usuario, sincronización en vivo, historial de recalificaciones por fideicomiso y botón para migrar lo guardado en modo local. Sin config (o donde Firebase no carga), sigue el modo local por navegador.
+
+## v1.4 — 2026-08-27 (retro de la sesión de validación con BX+)
+- Política interna: entidad auxiliar del crédito (SOFOM/SOFIPO/SOFOL/arrendadora/aseguradora) → ALTO por default; bancos no la activan. Nueva regla TR-22 y opciones nuevas en el catálogo de actividad.
+- Campo nuevo «Actividad del fideicomiso» (informativo/reglas; TR-23 giro de riesgo del vehículo). Columna opcional ActividadFideicomiso en layout v1.1 e importación.
+- Corrección (bug de la demo): PEP/Listas/BC ahora se reflejan en el riesgo del propio integrante (mín. ALTO / PROHIBITIVO), no solo en el consolidado.
+- Tablero y cédula PDF: columna «En alto» por grupo de rol (caso 95 bajos + 5 altos visible).
+- Buscador en el registro (ID/nombre/banda) preparando llegar a 100+.
+- Guía rápida paso a paso en PDF (docs/) y Excel modelo: pesos editables resaltados y hojas de captura ocultas.
+
 ## v1.3 — 2026-08-27
 - Cédula PDF (composición por rol, armado de la calificación, recomendaciones, detalle de integrantes).
 - Tablero del fideicomiso por grupo de rol y distribución por banda.

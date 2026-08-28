@@ -44,6 +44,25 @@ Puntaje = Σ(nivel de la variable × peso). Pesos (suman 100):
 
 El fiduciario (la institución) no se califica: es el sujeto regulado, no un cliente.
 
+## Equivalencia con la mecánica del banco
+
+El puntaje nivel × peso% × 100 de este instrumento es matemáticamente idéntico al nivel × multiplicador
+del modelo de clientes BX+ (multiplicadores que suman 100): ambos producen la escala 100–500
+(mínimo = todo en nivel 1; máximo = todo en nivel 5). La diferencia de composición es deliberada:
+el banco suma sus bloques inherente (40–200) + transaccional (60–300); el fiduciario, por ser
+multi-parte, califica vehículo e integrantes cada uno en 100–500 y consolida por MAX + peor parte.
+
+## Bandas provisionales y recalibración
+
+Los cortes 224 / 259 / 291 se HEREDAN de la Tabla 5 del modelo de clientes BX+, donde fueron
+determinados por desviación estándar sobre su base real. El fiduciario aún no tiene base real,
+por lo que estos cortes son PROVISIONALES: se adoptan como referencia inicial para que ambos
+modelos hablen la misma escala. Plan de recalibración: al acumular ~100–200 fideicomisos
+calificados en el registro (exportables por CSV), recalcular los cortes con media ± desviación
+estándar de la base fiduciaria real, dentro del ciclo de valoración (≤12 meses). Las
+invalidaciones (listas, PEP, BC, entidades auxiliares) y la regla de peor parte protegen el
+extremo alto con independencia de los cortes.
+
 ## Trazabilidad de datos
 
 Cada factor lleva etiqueta según el recorrido en sistema (checklist ago-2026): **V1** dato en sistema · **V1\*** extracción/proxy · **V2** sin dato aún (actividad económica = prioridad 1) · **AUTO** calculado.

@@ -150,7 +150,7 @@ aside{position:sticky;top:16px}
 // ---------- Catálogos (nivel 1-5) ----------
 const CAT={
  tipoPersona:[["PF nacional",1],["PF con actividad empresarial",2],["PM nacional",3],["Mandato",4],["PM extranjera",5],["Fideicomiso / vehículo",5]],
- actividad:[["Sin actividad de riesgo / asalariado",1],["Servicios profesionales",2],["Comercio general",2],["Sector financiero regulado",3],["No capturada",3],["Inmobiliario / construcción",4],["Comercio exterior",4],["Efectivo intensivo",5]],
+ actividad:[["Sin actividad de riesgo / asalariado",1],["Servicios profesionales",2],["Comercio general",2],["Institución de crédito (banco)",2],["Sector financiero regulado",3],["No capturada",3],["Inmobiliario / construcción",4],["Entidad auxiliar del crédito (SOFOM/SOFIPO/arrendadora/aseguradora)",4],["Comercio exterior",4],["Efectivo intensivo",5]],
  pais:[["México",1],["Norteamérica / Europa (bajo riesgo)",2],["Otro país",3],["Régimen fiscal preferente",4],["Lista GAFI gris",5],["Lista GAFI negra / sancionado",5]],
  estado:[["Baja incidencia delictiva",1],["Incidencia media",2],["Domicilio en el extranjero",3],["Alta incidencia delictiva",4],["Frontera / puerto",4]],
  edad:[["Más de 10 años",1],["3 a 10 años",2],["1 a 3 años",4],["Menos de 1 año",5]],
@@ -185,17 +185,74 @@ const FI_DEF=[["rol","Rol","rol"],["tipoPersona","Tipo persona","tipoPersona"],[
  ["paisNac","País nac.","pais"],["nacionalidad","Nacionalidad","pais"],["paisDom","País dom.","pais"],
  ["estadoDom","Estado dom.","estado"],["edad","Antigüedad","edad"]];
 
+function esAux(v){return String(v||"").indexOf("Entidad auxiliar")===0;}
+function effInt(p){const s=scoreInt(p);if(p.lista)return 500;
+  if(p.pep||p.bc||esAux(p.actividad))return Math.max(s,291);return s;}
 function lvl(cat,val){const f=CAT[cat].find(x=>x[0]===val);return f?f[1]:1;}
 function banda(s){return s>=291?"ALTO":s>=259?"MEDIO ALTO":s>=224?"MEDIO":"BAJO";}
 function cls(b){return "b-"+b.replace(/\s/g,"");}
 function partesLvl(n){return n<=3?1:n<=6?2:n<=10?3:5;}
 
+let FILTRO="";
 // ---------- Estado ----------
+// ====== MODO NUBE (Firebase) — pegar el firebaseConfig para activarlo ======
+const FB_CONFIG=null; /* Ejemplo:
+const FB_CONFIG={apiKey:"...",authDomain:"xxx.firebaseapp.com",projectId:"xxx",
+  storageBucket:"xxx.appspot.com",messagingSenderId:"...",appId:"..."};
+Requiere en la consola Firebase: Authentication → Email/contraseña con los usuarios del equipo,
+y Firestore con reglas: allow read, write: if request.auth != null (colección fideicomisos). */
+let MODO="local",USER=null,DB=null,UNSUB=null,NUBE_MSG="";
+function fbScript(src){return new Promise((res,rej)=>{const s=document.createElement("script");
+  s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});}
+function regKey(r){const b=String(r.id||"").replace(/[^\w.-]+/g,"_");return b||("SINID_"+(r.fecha||"")+"_"+Math.random().toString(36).slice(2,8));}
+async function initNube(){
+  if(!FB_CONFIG)return;
+  MODO="cargando";
+  try{
+    const v="10.12.2",u="https://www.gstatic.com/firebasejs/"+v+"/";
+    await fbScript(u+"firebase-app-compat.js");
+    await fbScript(u+"firebase-auth-compat.js");
+    await fbScript(u+"firebase-firestore-compat.js");
+    firebase.initializeApp(FB_CONFIG);DB=firebase.firestore();
+    firebase.auth().onAuthStateChanged(usr=>{
+      USER=usr||null;
+      if(UNSUB){UNSUB();UNSUB=null;}
+      if(USER){MODO="nube";NUBE_MSG="";
+        UNSUB=DB.collection("fideicomisos").orderBy("fecha","desc").onSnapshot(snap=>{
+          REG=snap.docs.map(d=>{const x=d.data();x.key=d.id;return x;});render();},
+          err=>{NUBE_MSG="Sin acceso a la base: revise las reglas de Firestore.";render();});}
+      else{MODO="login";}
+      render();});
+  }catch(e){MODO="local";NUBE_MSG="No se pudo cargar Firebase aquí; trabajando en modo local.";render();}
+}
+async function nubeSave(reg,msg){
+  try{const k=reg.key||regKey(reg);reg.key=k;
+    const hist={fecha:reg.fecha,final:reg.final,banda:reg.banda,por:USER?USER.email:""};
+    await DB.collection("fideicomisos").doc(k).set(
+      Object.assign({},reg,{historial:firebase.firestore.FieldValue.arrayUnion(hist)}),{merge:true});
+    if(msg)toast(msg);}
+  catch(e){toast("No se pudo guardar en la nube: "+(e&&e.code?e.code:"error")+".");}
+}
+async function nubeDelete(key){try{await DB.collection("fideicomisos").doc(key).delete();}
+  catch(e){toast("No se pudo eliminar en la nube.");}}
+async function loginNube(){
+  const em=document.getElementById("lg-em"),pw=document.getElementById("lg-pw");
+  if(!em||!pw)return;
+  try{await firebase.auth().signInWithEmailAndPassword(em.value.trim(),pw.value);}
+  catch(e){NUBE_MSG="Usuario o contraseña incorrectos.";render();}
+}
+function localPend(){try{const r=localStorage.getItem(LS);const a=r?JSON.parse(r):[];return Array.isArray(a)?a:[]}catch(e){return[]}}
+async function migraLocal(){
+  const a=localPend();if(!a.length)return;
+  for(const r of a){r.key=regKey(r);await nubeSave(r);}
+  try{localStorage.removeItem(LS)}catch(e){}
+  toast(a.length+" fideicomisos locales subidos a la nube.");render();
+}
 const LS="lexquo.fid.registro.v1";
 let REG=[];try{const r=localStorage.getItem(LS);if(r)REG=JSON.parse(r)||[]}catch(e){REG=[]}
-function persiste(){try{localStorage.setItem(LS,JSON.stringify(REG))}catch(e){}}
+function persiste(){if(MODO==="nube")return;try{localStorage.setItem(LS,JSON.stringify(REG))}catch(e){}}
 let F=nuevoFid(),EDIT=-1;
-function nuevoFid(){return{id:"",nombre:"",tipologia:"Administración",patrimonio:"Efectivo / valores bursátiles",
+function nuevoFid(){return{id:"",nombre:"",actividadFid:"No capturada",tipologia:"Administración",patrimonio:"Efectivo / valores bursátiles",
   valor:"Hasta 5 MDP",antig:"Más de 10 años",av:"Sin actividad vulnerable (Tipo A)",
   proc:"Bancarizados con soporte",usd:"Sin USD ni parte extranjera",desv:"Sin desviación / no evaluable",
   integrantes:[nuevoInt("Fideicomitente"),nuevoInt("Fideicomisario")]};}
@@ -209,7 +266,7 @@ function scoreEstr(f){let s=0;
   for(const[k,,cat]of FF_DEF)s+=lvl(cat,f[k])*W_FF[k];
   s+=partesLvl(f.integrantes.length)*W_FF.partes;return Math.round(s);}
 function calcula(f){
-  const ints=f.integrantes.map(p=>({...p,score:scoreInt(p)}));
+  const ints=f.integrantes.map(p=>({...p,score:effInt(p)}));
   const estr=scoreEstr(f);
   // Ponderación POR GRUPO DE ROL: promedia dentro del rol, luego pondera el rol.
   const g={};ints.forEach(p=>{(g[p.rol]=g[p.rol]||[]).push(p.score)});
@@ -221,11 +278,13 @@ function calcula(f){
   const peor=ints.length?Math.max(...ints.map(p=>p.score)):0;
   let base=Math.max(estr,pond);
   if(peor>=291)base=Math.max(base,peor);
-  const hayB=ints.some(p=>p.lista),hayA=ints.some(p=>p.pep||p.bc);
+  const hayB=ints.some(p=>p.lista);
+  const hayAux=ints.some(p=>esAux(p.actividad))||esAux(f.actividadFid);
+  const hayA=ints.some(p=>p.pep||p.bc)||hayAux;
   let bandaF,final=base,inval="";
   if(hayB){bandaF="PROHIBITIVO";final=500;inval="Invalidación tipo B: parte en lista de sanciones.";}
   else if(hayA){final=Math.max(base,291);bandaF=banda(final);
-    inval="Invalidación tipo A: "+[ints.some(p=>p.pep)?"PEP":"",ints.some(p=>p.bc)?"BC no identificado":""].filter(Boolean).join(" · ")+" — mínimo ALTO.";}
+    inval="Invalidación tipo A: "+[ints.some(p=>p.pep)?"PEP":"",ints.some(p=>p.bc)?"BC no identificado":"",hayAux?"Entidad auxiliar del crédito (política interna)":""].filter(Boolean).join(" · ")+" — mínimo ALTO.";}
   else bandaF=banda(final);
   return{ints,estr,pond,peor,final,banda:bandaF,grupos,inval};
 }
@@ -295,6 +354,12 @@ const REGLAS=[
  ["TR-21",2,(f,R)=>R.ints.some(p=>p.actividad==="Efectivo intensivo"),"Partes con giro intensivo en efectivo",
   "Reforzar el analisis de origen de recursos de las partes con giro intensivo en efectivo.",
   "ENR · Giros de alto riesgo"],
+ ["TR-22",1,(f,R)=>R.ints.some(p=>esAux(p.actividad))||esAux(f.actividadFid),"Entidad auxiliar del credito - politica interna",
+  "Riesgo ALTO por default (SOFOM, SOFIPO, SOFOL, arrendadora, aseguradora, transmisor, almacen). Aplicar debida diligencia intensificada y aprobacion de cumplimiento. Las instituciones de credito (bancos) NO activan esta regla.",
+  "Politica interna BX+ · Disp. 28a DCG"],
+ ["TR-23",2,(f)=>["Inmobiliario / construcción","Comercio exterior","Efectivo intensivo"].indexOf(f.actividadFid)>-1,"Giro de riesgo del fideicomiso",
+  "El objeto del fideicomiso corresponde a un sector de alta vulnerabilidad: monitoreo reforzado de las operaciones del vehiculo y soporte documental de cada evento patrimonial.",
+  "Anexo 3 DCG · ENR 2023"],
  ["TR-30",3,(f,R)=>R.ints.some(p=>p.actividad==="No capturada"),"Completar la actividad economica de las partes",
   "Existe el campo en el sistema pero no esta poblado: capturar el giro de cada parte para elevar la precision del modelo.",
   "Hallazgo del recorrido en sistema (V2, prioridad 1)"]
@@ -310,6 +375,7 @@ const PRIN={1:"CRITICA",2:"ALTA",3:"SEGUIMIENTO"};
 function statsRol(R){
   return R.grupos.map(g=>{const sc=R.ints.filter(p=>p.rol===g.rol).map(p=>p.score);
     return{...g,min:Math.min.apply(null,sc),max:Math.max.apply(null,sc),
+      alto:sc.filter(x=>x>=291).length,
       aporte:Math.round(g.prom*g.pesoN)};});
 }
 function tablero(R){
@@ -325,10 +391,10 @@ function tablero(R){
     <h3>Riesgo por grupo de rol</h3>
     <div class="tw"><table class="tb">
       <thead><tr><th>Rol</th><th>Partes</th><th>Mínimo</th><th>Promedio</th><th>Máximo</th>
-        <th>Banda del grupo</th><th>Peso</th><th>Aporte</th></tr></thead>
+        <th>En alto</th><th>Banda del grupo</th><th>Peso</th><th>Aporte</th></tr></thead>
       <tbody>${S.map(x=>`<tr><td>${esc(x.rol)}</td><td>${x.n}</td><td>${x.min}</td>
         <td><b>${x.prom}</b><div class="bar"><i style="width:${Math.round(x.prom/maxP*100)}%"></i></div></td>
-        <td>${x.max}</td><td><span class="chip ${cls(banda(x.prom))}">${banda(x.prom)}</span></td>
+        <td>${x.max}</td><td>${x.alto?`<b style="color:var(--b4)">${x.alto}</b>`:"0"}</td><td><span class="chip ${cls(banda(x.prom))}">${banda(x.prom)}</span></td>
         <td>${Math.round(x.pesoN*100)}%</td><td>${x.aporte}</td></tr>`).join("")}
         <tr class="tot"><td>Ponderado de integrantes</td><td>${R.ints.length}</td><td colspan="4"></td>
           <td>100%</td><td>${R.pond}</td></tr>
@@ -409,10 +475,10 @@ function pdfCedula(){
     y-=12;
   };
   tabla("Composicion y riesgo por grupo de rol",
-    ["Rol","Partes","Minimo","Promedio","Maximo","Banda del grupo","Peso","Aporte"],
-    [150,45,45,55,45,95,40,40],
-    S.map(x=>[x.rol,x.n,x.min,"*"+x.prom,x.max,banda(x.prom),Math.round(x.pesoN*100)+"%",x.aporte])
-     .concat([["*Ponderado de integrantes",R.ints.length,"","","","","100%","*"+R.pond]]));
+    ["Rol","Partes","Minimo","Promedio","Maximo","En alto","Banda del grupo","Peso","Aporte"],
+    [132,40,42,50,42,42,82,38,38],
+    S.map(x=>[x.rol,x.n,x.min,"*"+x.prom,x.max,x.alto?"*"+x.alto:"0",banda(x.prom),Math.round(x.pesoN*100)+"%",x.aporte])
+     .concat([["*Ponderado de integrantes",R.ints.length,"","","","","","100%","*"+R.pond]]));
   const BAND=["BAJO","MEDIO","MEDIO ALTO","ALTO"];
   tabla("Distribucion de integrantes por banda",["Banda","Integrantes","Porcentaje"],[150,90,90],
     BAND.map(b=>{const n=R.ints.filter(p=>banda(p.score)===b).length;
@@ -479,7 +545,11 @@ function render(){
   document.getElementById("root").innerHTML=`
   <header class="top">
     <div>
-      <div class="brandline"><span class="logo">B<b>×+</b></span> Banco Ve por Más · Área Fiduciaria</div>
+      <div class="brandline"><span class="logo">B<b>×+</b></span> Banco Ve por Más · Área Fiduciaria
+        ${MODO==="nube"?`<span class="tag t-V1" style="font-size:10px">NUBE · ${esc(USER&&USER.email||"")}</span>`:
+          MODO==="login"?`<span class="tag t-V2" style="font-size:10px">NUBE · sin sesión</span>`:
+          MODO==="cargando"?`<span class="tag t-AUTO" style="font-size:10px">Conectando…</span>`:
+          FB_CONFIG?"":`<span class="tag t-V2" style="font-size:10px">MODO LOCAL</span>`}</div>
       <h1>Calificador de riesgo fiduciario</h1>
       <div class="sub">Grado de riesgo de cliente por fideicomiso y por integrante. Instrumento provisional
       mientras se libera el sistema — distinto e independiente de la MEBR de la entidad.
@@ -488,6 +558,7 @@ function render(){
     <div style="display:flex;gap:8px">
       ${EDIT>=0?`<span style="align-self:center;font-size:11.5px;color:var(--brand-2);font-weight:600">
         Editando ${esc(REG[EDIT]?REG[EDIT].id||"(sin ID)":"")}</span>`:""}
+      ${MODO==="nube"?`<button id="salir">Cerrar sesión</button>`:""}
       <button id="nuevo">${EDIT>=0?"Cancelar edición":"Limpiar"}</button>
       <button id="pdf">Cédula PDF</button>
       <button class="btn-p" id="guardar">${EDIT>=0?"Actualizar":"Guardar en el registro"}</button>
@@ -495,9 +566,24 @@ function render(){
   </header>
   <div class="grid">
     <div>
-      <div class="priv"><b>Los datos no se comparten.</b> Lo que captura queda solo en este navegador
+      ${MODO==="login"?`<div class="card" style="max-width:430px">
+        <h2>Iniciar sesión — registro en la nube</h2>
+        <div class="hint">Use el usuario que le asignaron para el registro compartido del equipo.</div>
+        <div style="display:grid;gap:9px">
+          <div><label>Correo</label><input type="text" id="lg-em" placeholder="usuario@vepormas.com"></div>
+          <div><label>Contraseña</label><input type="password" id="lg-pw"
+            style="width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:5px;background:var(--ground);color:var(--ink);font-family:inherit"></div>
+          ${NUBE_MSG?`<div class="warn">${esc(NUBE_MSG)}</div>`:""}
+          <div><button class="btn-p" id="lg-go">Entrar</button></div>
+        </div></div>`:""}
+      ${NUBE_MSG&&MODO!=="login"?`<div class="warn">${esc(NUBE_MSG)}</div>`:""}
+      ${MODO==="nube"&&localPend().length?`<div class="priv"><b>Tiene ${localPend().length} fideicomisos guardados solo en este navegador.</b>
+        <button id="migrar" style="margin-left:8px">Subirlos a la nube</button></div>`:""}
+      ${MODO==="nube"?`<div class="priv"><b>Registro compartido en la nube.</b> Lo que guarde aquí lo ve todo el equipo
+      desde cualquier navegador, con historial de recalificaciones por fideicomiso.</div>`
+      :`<div class="priv"><b>Los datos no se comparten.</b> Lo que captura queda solo en este navegador
       (nada se guarda en la página ni lo ve quien más abra el enlace). Para conservarlo o pasarlo al Excel,
-      use <b>Exportar CSV</b>. Quien abra la app la encuentra en blanco.</div>
+      use <b>Exportar CSV</b> o <b>Respaldar</b>. Quien abra la app la encuentra en blanco.</div>`}
       <div class="card">
         <h2>Datos del fideicomiso</h2>
         <div class="hint">El número de partes se calcula solo: ${F.integrantes.length} integrantes → nivel ${partesLvl(F.integrantes.length)}.</div>
@@ -509,6 +595,9 @@ function render(){
         <div class="ff">
           <div><label>Número / ID</label><input type="text" id="f-id" value="${esc(F.id)}" placeholder="F/0001"></div>
           <div><label>Nombre del fideicomiso</label><input type="text" id="f-nombre" value="${esc(F.nombre)}" placeholder="Traslativo inmobiliario…"></div>
+          <div><label>Actividad del fideicomiso <span class="tag t-AUTO" title="Informativa: alimenta reglas y política; no pondera">REGLAS</span></label>
+            <select data-f="actividadFid">${opts("actividad",F.actividadFid||"No capturada")}</select>
+            <div class="f-lvl">Entidad auxiliar del crédito → ALTO por política interna</div></div>
           ${FF_DEF.map(([k,lab,cat])=>`<div><label>${lab}${tag(k)}</label>
             <select data-f="${k}" data-cat="${cat}">${opts(cat,F[k])}</select>
             <div class="f-lvl">Peso ${W_FF[k]}% · nivel ${lvl(cat,F[k])}</div></div>`).join("")}
@@ -519,7 +608,7 @@ function render(){
         <div class="hint">Una fila por parte, sin límite. Marque PEP, listas o BC sin identificar para activar invalidaciones.</div>
         <div class="tw"><table>
           <thead><tr><th>Nombre</th>${FI_DEF.map(([k,l])=>`<th>${l}${tag(k)}</th>`).join("")}<th>Alertas</th><th>Riesgo</th><th></th></tr></thead>
-          <tbody>${F.integrantes.map((p,i)=>{const sc=scoreInt(p),b=banda(sc);return `<tr>
+          <tbody>${F.integrantes.map((p,i)=>{const sc=effInt(p),b=p.lista?"PROHIBITIVO":banda(sc);return `<tr>
             <td class="nm"><input type="text" data-i="${i}" data-k="nombre" value="${esc(p.nombre)}" placeholder="Nombre de la parte"></td>
             ${FI_DEF.map(([k,,cat])=>`<td><select data-i="${i}" data-k="${k}" data-cat="${cat}">${opts(cat,p[k])}</select></td>`).join("")}
             <td><div class="flags">
@@ -553,6 +642,11 @@ function render(){
       </div>`})()}
       <div class="card">
         <h2>Registro de fideicomisos</h2>
+        <div class="rowtools" style="margin:2px 0 9px">
+          <input type="text" id="buscar" value="${esc(FILTRO)}" placeholder="Buscar por ID, nombre o banda… (Enter)"
+            style="max-width:280px;padding:6px 9px;border:1px solid var(--line);border-radius:5px;background:var(--ground);color:var(--ink);font-family:inherit">
+          ${FILTRO?`<button id="qfiltro">Quitar filtro</button>`:""}
+        </div>
         <div class="hint">Se guarda en la página: al recargar sigue aquí y lo ven todos los que abran el enlace.</div>
         ${REG.length?`<div class="stats">
           <div class="stat"><b>${REG.length}</b><span>Capturados</span></div>
@@ -562,7 +656,9 @@ function render(){
         </div>
         <div class="tw"><table><thead><tr><th>ID</th><th>Fideicomiso</th><th>Partes</th><th>Estruct.</th>
           <th>Ponderado</th><th>Peor parte</th><th>Final</th><th>Banda</th><th>Actualizado</th><th></th></tr></thead>
-          <tbody>${REG.map((x,i)=>`<tr${i===EDIT?' style="outline:2px solid var(--brand-3);outline-offset:-2px"':""}><td>${esc(x.id||"—")}</td><td>${esc(x.nombre||"—")}</td>
+          <tbody>${REG.map((x,ri)=>({x,ri})).filter(v=>{if(!FILTRO)return true;const q=FILTRO.toLowerCase();
+            return String(v.x.id||"").toLowerCase().indexOf(q)>-1||String(v.x.nombre||"").toLowerCase().indexOf(q)>-1||String(v.x.banda||"").toLowerCase().indexOf(q)>-1;})
+            .map(({x,ri:i})=>`<tr${i===EDIT?' style="outline:2px solid var(--brand-3);outline-offset:-2px"':""}><td>${esc(x.id||"—")}</td><td>${esc(x.nombre||"—")}</td>
             <td style="font-variant-numeric:tabular-nums">${x.nPartes}</td>
             <td style="font-variant-numeric:tabular-nums">${x.estr}</td>
             <td style="font-variant-numeric:tabular-nums">${x.pond}</td>
@@ -631,7 +727,9 @@ function bind(){
   document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{
     F.integrantes.splice(+b.dataset.del,1);render()});
   document.querySelectorAll("[data-delreg]").forEach(b=>b.onclick=()=>{
-    const i=+b.dataset.delreg;REG.splice(i,1);if(EDIT===i)EDIT=-1;else if(EDIT>i)EDIT--;guarda()});
+    const i=+b.dataset.delreg;
+    if(MODO==="nube"){if(REG[i]&&REG[i].key)nubeDelete(REG[i].key);if(EDIT===i)EDIT=-1;return;}
+    REG.splice(i,1);if(EDIT===i)EDIT=-1;else if(EDIT>i)EDIT--;guarda()});
   document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{
     const i=+b.dataset.open;EDIT=i;F=JSON.parse(JSON.stringify(REG[i].fid));render();
     window.scrollTo({top:0,behavior:"smooth"});});
@@ -648,7 +746,11 @@ function bind(){
     const reg={id:F.id,nombre:F.nombre,nPartes:F.integrantes.length,estr:R.estr,pond:R.pond,
       peor:R.peor,final:R.final,banda:R.banda,fecha:new Date().toISOString().slice(0,10),
       fid:JSON.parse(JSON.stringify(F))};
-    if(EDIT>=0){const ant=REG[EDIT].final;REG[EDIT]=reg;EDIT=-1;F=nuevoFid();
+    if(MODO==="nube"){
+      if(EDIT>=0&&REG[EDIT])reg.key=REG[EDIT].key;
+      const ant=EDIT>=0&&REG[EDIT]?REG[EDIT].final:null;EDIT=-1;F=nuevoFid();
+      nubeSave(reg,ant!==null?("Actualizado en la nube. Antes "+ant+" → ahora "+reg.final+"."):"Guardado en la nube para todo el equipo.");render();}
+    else if(EDIT>=0){const ant=REG[EDIT].final;REG[EDIT]=reg;EDIT=-1;F=nuevoFid();
       guarda("Actualizado. Antes "+ant+" → ahora "+reg.final+" ("+reg.banda+").");}
     else{REG.push(reg);F=nuevoFid();guarda("Guardado. Recuerde exportar el CSV al terminar.");}};
   document.getElementById("pdf").onclick=descargaPDF;
@@ -656,6 +758,18 @@ function bind(){
   const l=document.getElementById("limpiar");if(l)l.onclick=()=>{
     if(confirm("¿Vaciar el registro de este navegador? No se puede deshacer."))
     {REG=[];guarda("Registro vacío.")}};
+  const lg=document.getElementById("lg-go");
+  if(lg){lg.onclick=loginNube;
+    const pw=document.getElementById("lg-pw");
+    if(pw)pw.onkeydown=e=>{if(e.key==="Enter")loginNube()};}
+  const so=document.getElementById("salir");
+  if(so)so.onclick=()=>{try{firebase.auth().signOut()}catch(e){}};
+  const mg=document.getElementById("migrar");
+  if(mg)mg.onclick=migraLocal;
+  const bq=document.getElementById("buscar");
+  if(bq){bq.onchange=e=>{FILTRO=e.target.value.trim();render()};}
+  const qf=document.getElementById("qfiltro");
+  if(qf)qf.onclick=()=>{FILTRO="";render()};
   document.getElementById("plantilla").onclick=plantillaCSV;
   document.getElementById("imp").onchange=importaCSV;
   const bk=document.getElementById("bkp");if(bk)bk.onclick=async()=>{
@@ -668,10 +782,12 @@ function bind(){
       const arr=JSON.parse(String(rd.result));
       if(!Array.isArray(arr))throw 0;
       let nu=0,up=0;
-      arr.forEach(r=>{if(!r||!r.fid)return;
+      if(MODO==="nube"){arr.forEach(r=>{if(r&&r.fid){r.key=regKey(r);nubeSave(r);nu++}});
+        toast("Respaldo enviado a la nube: "+nu+" fideicomisos.");}
+      else{arr.forEach(r=>{if(!r||!r.fid)return;
         const i=REG.findIndex(x=>x.id&&r.id&&x.id===r.id);
         if(i>=0){REG[i]=r;up++}else{REG.push(r);nu++}});
-      guarda("Respaldo restaurado: "+nu+" nuevos, "+up+" actualizados.");
+      guarda("Respaldo restaurado: "+nu+" nuevos, "+up+" actualizados.");}
     }catch(err){toast("El archivo no es un respaldo válido.")}
     };
     rd.readAsText(file,"utf-8");
@@ -680,7 +796,7 @@ function bind(){
 
 // ---------- Carga masiva ----------
 const COLS=["ID","Fideicomiso","Tipologia","Patrimonio","Valor","AntiguedadFid","ActividadVulnerable",
- "Procedencia","USD","Desviacion","NombreParte","Rol","TipoPersona","ActividadEconomica",
+ "Procedencia","USD","Desviacion","ActividadFideicomiso","NombreParte","Rol","TipoPersona","ActividadEconomica",
  "PaisNacimiento","Nacionalidad","PaisDomicilio","EstadoDomicilio","AntiguedadParte","PEP","Listas","BCsinIdentificar"];
 const MAPF={Tipologia:"tipologia",Patrimonio:"patrimonio",Valor:"valor",AntiguedadFid:"antig",
  ActividadVulnerable:"av",Procedencia:"proc",USD:"usd",Desviacion:"desv"};
@@ -690,10 +806,10 @@ function csvLine(a){return a.map(v=>'"'+String(v==null?"":v).replace(/"/g,'""')+
 async function plantillaCSV(){
   const ej=nuevoFid(),p=nuevoInt("Fideicomitente");
   const fila=n=>[ "F/0001","Ejemplo traslativo",ej.tipologia,ej.patrimonio,ej.valor,ej.antig,ej.av,ej.proc,
-    ej.usd,ej.desv,n,p.rol,p.tipoPersona,p.actividad,p.paisNac,p.nacionalidad,p.paisDom,p.estadoDom,p.edad,"NO","NO","NO"];
+    ej.usd,ej.desv,"No capturada",n,p.rol,p.tipoPersona,p.actividad,p.paisNac,p.nacionalidad,p.paisDom,p.estadoDom,p.edad,"NO","NO","NO"];
   const vals=["","VALORES VÁLIDOS POR COLUMNA (copie exactamente uno):","",
     ...Object.entries({Tipologia:"tipologia",Patrimonio:"patrimonio",Valor:"valor",AntiguedadFid:"antig",
-      ActividadVulnerable:"av",Procedencia:"proc",USD:"usd",Desviacion:"desv",Rol:"rol",
+      ActividadVulnerable:"av",Procedencia:"proc",USD:"usd",Desviacion:"desv",ActividadFideicomiso:"actividad",Rol:"rol",
       TipoPersona:"tipoPersona",ActividadEconomica:"actividad",PaisNacimiento:"pais",Nacionalidad:"pais",
       PaisDomicilio:"pais",EstadoDomicilio:"estado",AntiguedadParte:"edad"})
       .map(([c,k])=>c+": "+CAT[k].map(x=>x[0]).join(" | "))];
@@ -732,6 +848,7 @@ function importaCSV(e){
           const f=nuevoFid();f.integrantes=[];f.id=id;f.nombre=(row[idx.Fideicomiso]||"").trim();
           for(const col in MAPF){const k=MAPF[col];const cat=FF_DEF.find(x=>x[0]===k)[2];
             f[k]=valida(cat,(row[idx[col]]||"").trim(),f[k]);}
+          if(idx.ActividadFideicomiso!==undefined)f.actividadFid=valida("actividad",(row[idx.ActividadFideicomiso]||"").trim(),f.actividadFid);
           porId[id]=f;
         }
         const p=nuevoInt();p.nombre=(row[idx.NombreParte]||"").trim();
@@ -789,5 +906,6 @@ async function exportCSV(){
   await descarga("registro_fideicomisos.csv","\ufeff"+[hd.join(",")].concat(rows).join("\r\n"),"text/csv");
 }
 render();
+initNube();
 </script>
 <script>(new Function(document.getElementById("app-src").textContent))();</script>

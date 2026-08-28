@@ -29,6 +29,37 @@ Los datos capturados viven **solo en el navegador de quien captura** (`localStor
 
 **Artifact de Claude:** la app también corre publicada como artifact (mismo archivo).
 
+## Modo nube (Firebase) — registro compartido del equipo
+
+La app es **bimodal**: sin configuración trabaja en modo local (datos por navegador); con Firebase,
+el registro es compartido — todos ven lo mismo desde cualquier navegador, con login por usuario e
+historial de recalificaciones por fideicomiso.
+
+Para activarlo (10 minutos, consola de Firebase):
+
+1. **Crear proyecto** en console.firebase.google.com (o usar el existente).
+2. **Authentication → Sign-in method → Email/contraseña: habilitar.** En Users, crear las cuentas
+   del equipo (Héctor, Sabrina, Fernando, Maribel…) con su contraseña.
+3. **Firestore Database → crear base** (modo producción) y en Rules pegar:
+   ```
+   rules_version = '2';
+   service cloud.firestore {
+     match /databases/{database}/documents {
+       match /fideicomisos/{id} {
+         allow read, write: if request.auth != null;
+       }
+     }
+   }
+   ```
+4. **Project settings → General → Your apps → Web**: registrar la app y copiar el `firebaseConfig`.
+5. En `index.html`, buscar `const FB_CONFIG=null;` y sustituir el `null` por el objeto copiado.
+6. Redesplegar en Netlify. La app pedirá login; el registro queda en la nube.
+
+Notas: el `firebaseConfig` no es un secreto (la seguridad la dan las reglas + los usuarios), pero el
+repo debe seguir privado. El botón «Subirlos a la nube» migra lo que cada quien tenga en modo local.
+En el artifact de Claude la nube no carga (CSP) y la app cae a modo local automáticamente — el modo
+nube es para el despliegue en Netlify. Firestore gratuito (plan Spark) alcanza de sobra para esta base.
+
 ## Uso masivo
 
 1. Descargar la plantilla desde la app (o `plantillas/plantilla_captura_fideicomisos.csv`).
