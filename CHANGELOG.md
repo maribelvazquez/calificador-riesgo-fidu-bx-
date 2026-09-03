@@ -1,5 +1,28 @@
 # Changelog
 
+## v1.7.1 — 2026-09-03
+- FI7 «Edad / antigüedad» ahora es dinámico por tipo de persona: personas físicas califican por EDAD (25–50, 51–65, +65, 18–24, menor de edad) y morales/vehículos por ANTIGÜEDAD de constitución. El combo cambia solo al cambiar el tipo de persona; la importación CSV valida según el tipo de cada fila.
+- Layout v1.3: catálogo «Edad / antigüedad parte» ampliado con los rangos de edad de PF. Matriz Excel v2.2 con el mismo catálogo en FI7.
+
+## v1.7 — 2026-09-03
+- Catálogo propio para la ACTIVIDAD DEL FIDEICOMISO (14 giros típicos del vehículo, anclados a las fracciones de la LFPIORPI y tipologías: tenencia patrimonial, prestaciones laborales, sucesorio, garantía/fuente de pago, inversiones, zona restringida, arrendamiento XV, donativos XIII, préstamos IV, comercio exterior, entidad auxiliar, desarrollo inmobiliario V/V Bis, efectivo intensivo). Antes reutilizaba el catálogo de actividades de personas, que no describe al vehículo.
+- TR-23 ahora dispara por nivel del catálogo (giro ≥4), robusto a renombres; TR-22 (auxiliares) intacta.
+- Layout de carga v1.2: columna ActividadFideicomiso validada contra el catálogo nuevo (CATÁLOGOS col. O). El catálogo de actividad económica de INTEGRANTES no cambia.
+
+## v1.6.1 — 2026-09-02 (tipologías Impacto360)
+- TR-24 (CRÍTICA): transmisión de dominio sin origen trazable — tipología de lavado inmobiliario por transferencias no financiadas.
+- TR-26 (ALTA): estructura extranjera interpuesta — desglosar UBO >25%; no presumir transparencia de LLCs de EE. UU. (exención CTA/FinCEN).
+- Panorama: detección de partes presentes en varios fideicomisos del registro (firmantes/fideicomitentes recurrentes — señal de red).
+
+## v1.6 — 2026-09-02
+- Panorama del registro: gráfica de distribución por grado de riesgo (semáforo) y reporte por actividad vulnerable (Tipo A / B / C / sin dato) con n, %, «en alto» y promedio — visible cuando hay fideicomisos guardados.
+- Próxima revisión sugerida por banda (ALTO 6m · MEDIO ALTO 12m · MEDIO 24m · BAJO 36m): en la tarjeta de resultado, en el registro (en rojo si ya venció), en la cédula PDF y en el export CSV.
+- Paleta del semáforo recalibrada (validación de accesibilidad): naranja y rojo ahora se distinguen entre sí y para daltonismo.
+
+## v1.5.2 — 2026-09-02
+- Bandas en semáforo: BAJO verde, MEDIO ámbar, MEDIO ALTO naranja, ALTO/PROHIBITIVO rojo — en chips, tarjeta de consolidado, registro, prioridades de tratamiento (CRÍTICA roja, ALTA naranja), conteo «En alto», avisos de invalidación y cédula PDF. Tonos sobrios, legibles en modo claro y oscuro.
+- Modo oscuro: corregido el texto blanco fijo sobre fondos de marca invertidos (tarjeta de consolidado, botones primarios, encabezados de tabla, etiquetas V1, toasts, fila de total).
+
 ## v1.5.1 — 2026-09-02
 - Firebase activado: firebaseConfig del proyecto `calificador-fiduciario` integrado en index.html (login por correo/contraseña del equipo, registro compartido en Firestore).
 - Aviso inferior coherente con el modo: en nube sin sesión ya no muestra el texto del modo local; indica iniciar sesión para usar el registro compartido.

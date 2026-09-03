@@ -157,10 +157,25 @@ aside{position:sticky;top:16px}
 // ---------- Catálogos (nivel 1-5) ----------
 const CAT={
  tipoPersona:[["PF nacional",1],["PF con actividad empresarial",2],["PM nacional",3],["Mandato",4],["PM extranjera",5],["Fideicomiso / vehículo",5]],
+ actFid:[["Tenencia / administración patrimonial estática",1],
+  ["Prestaciones laborales (fondos de ahorro / pensiones)",1],
+  ["Planeación patrimonial / sucesorio-testamentario",2],
+  ["Garantía o fuente de pago de financiamiento",2],
+  ["Administración de inversiones y valores",3],
+  ["Inmobiliario: adquisición en zona restringida",3],
+  ["No capturada",3],
+  ["Arrendamiento de inmuebles (Fracc. XV LFPIORPI)",4],
+  ["Recepción de donativos / asistencia social (Fracc. XIII)",4],
+  ["Otorgamiento de préstamos o créditos (Fracc. IV)",4],
+  ["Comercio exterior / pagos internacionales",4],
+  ["Entidad auxiliar del crédito como parte del negocio (SOFOM/SOFIPO/arrendadora/aseguradora)",4],
+  ["Desarrollo inmobiliario: construcción y venta (Fracc. V / V Bis)",5],
+  ["Manejo intensivo de efectivo",5]],
  actividad:[["Sin actividad de riesgo / asalariado",1],["Servicios profesionales",2],["Comercio general",2],["Institución de crédito (banco)",2],["Sector financiero regulado",3],["No capturada",3],["Inmobiliario / construcción",4],["Entidad auxiliar del crédito (SOFOM/SOFIPO/arrendadora/aseguradora)",4],["Comercio exterior",4],["Efectivo intensivo",5]],
  pais:[["México",1],["Norteamérica / Europa (bajo riesgo)",2],["Otro país",3],["Régimen fiscal preferente",4],["Lista GAFI gris",5],["Lista GAFI negra / sancionado",5]],
  estado:[["Baja incidencia delictiva",1],["Incidencia media",2],["Domicilio en el extranjero",3],["Alta incidencia delictiva",4],["Frontera / puerto",4]],
  edad:[["Más de 10 años",1],["3 a 10 años",2],["1 a 3 años",4],["Menos de 1 año",5]],
+ edadPF:[["25 a 50 años",1],["51 a 65 años",2],["18 a 24 años",4],["Más de 65 años",4],["Menor de edad",4]],
  rol:[["Fideicomisario",3],["Apoderado / delegado",3],["Tercero / garante",2],["Fideicomitente",4],["Comité técnico",4],["Fideicomitente-Fideicomisario",5]],
  tipologia:[["Administración",2],["Garantía",2],["Testamentario",2],["Inversión",3],["Fuente de pago",3],["Público / gubernamental",4],["Zona restringida",4],["Traslativo de dominio",5]],
  patrimonio:[["Efectivo / valores bursátiles",1],["Inmuebles",3],["Mixto (efectivo y especie)",3],["Acciones / partes sociales",4],["Derechos de cobro / otros bienes",4]],
@@ -190,9 +205,11 @@ const FF_DEF=[["tipologia","Tipología del fideicomiso","tipologia"],["patrimoni
  ["usd","Operaciones en USD / transfronterizas","usd"],["desv","Desviación del fin del contrato","desv"]];
 const FI_DEF=[["rol","Rol","rol"],["tipoPersona","Tipo persona","tipoPersona"],["actividad","Actividad","actividad"],
  ["paisNac","País nac.","pais"],["nacionalidad","Nacionalidad","pais"],["paisDom","País dom.","pais"],
- ["estadoDom","Estado dom.","estado"],["edad","Antigüedad","edad"]];
+ ["estadoDom","Estado dom.","estado"],["edad","Edad / antig.","edad"]];
 
 function esAux(v){return String(v||"").indexOf("Entidad auxiliar")===0;}
+function esPF(p){return String(p.tipoPersona||"").indexOf("PF")===0;}
+function catEdad(p){return esPF(p)?"edadPF":"edad";}
 function effInt(p){const s=scoreInt(p);if(p.lista)return 500;
   if(p.pep||p.bc||esAux(p.actividad))return Math.max(s,291);return s;}
 function lvl(cat,val){const f=CAT[cat].find(x=>x[0]===val);return f?f[1]:1;}
@@ -271,10 +288,10 @@ function nuevoFid(){return{id:"",nombre:"",actividadFid:"No capturada",tipologia
   integrantes:[nuevoInt("Fideicomitente"),nuevoInt("Fideicomisario")]};}
 function nuevoInt(rol){return{nombre:"",rol:rol||"Fideicomisario",tipoPersona:"PF nacional",
   actividad:"No capturada",paisNac:"México",nacionalidad:"México",paisDom:"México",
-  estadoDom:"Baja incidencia delictiva",edad:"Más de 10 años",pep:false,lista:false,bc:false};}
+  estadoDom:"Baja incidencia delictiva",edad:"25 a 50 años",pep:false,lista:false,bc:false};}
 
 // ---------- Cálculo ----------
-function scoreInt(p){let s=0;for(const k in W_FI){const cat=(k==="paisNac"||k==="nacionalidad"||k==="paisDom")?"pais":(k==="estadoDom"?"estado":k);s+=lvl(cat,p[k])*W_FI[k];}return Math.round(s);}
+function scoreInt(p){let s=0;for(const k in W_FI){const cat=k==="edad"?catEdad(p):((k==="paisNac"||k==="nacionalidad"||k==="paisDom")?"pais":(k==="estadoDom"?"estado":k));s+=lvl(cat,p[k])*W_FI[k];}return Math.round(s);}
 function scoreEstr(f){let s=0;
   for(const[k,,cat]of FF_DEF)s+=lvl(cat,f[k])*W_FF[k];
   s+=partesLvl(f.integrantes.length)*W_FF.partes;return Math.round(s);}
@@ -370,7 +387,7 @@ const REGLAS=[
  ["TR-22",1,(f,R)=>R.ints.some(p=>esAux(p.actividad))||esAux(f.actividadFid),"Entidad auxiliar del credito - politica interna",
   "Riesgo ALTO por default (SOFOM, SOFIPO, SOFOL, arrendadora, aseguradora, transmisor, almacen). Aplicar debida diligencia intensificada y aprobacion de cumplimiento. Las instituciones de credito (bancos) NO activan esta regla.",
   "Politica interna BX+ · Disp. 28a DCG"],
- ["TR-23",2,(f)=>["Inmobiliario / construcción","Comercio exterior","Efectivo intensivo"].indexOf(f.actividadFid)>-1,"Giro de riesgo del fideicomiso",
+ ["TR-23",2,(f)=>{const it=CAT.actFid.find(a=>a[0]===f.actividadFid);return !!it&&it[1]>=4&&!esAux(f.actividadFid);},"Giro de riesgo del fideicomiso",
   "El objeto del fideicomiso corresponde a un sector de alta vulnerabilidad: monitoreo reforzado de las operaciones del vehiculo y soporte documental de cada evento patrimonial.",
   "Anexo 3 DCG · ENR 2023"],
  ["TR-24",1,(f)=>f.tipologia==="Traslativo de dominio"&&f.proc!=="Bancarizados con soporte"&&f.proc!=="Venta de activos documentada",
@@ -622,7 +639,7 @@ function render(){
           <div><label>Número / ID</label><input type="text" id="f-id" value="${esc(F.id)}" placeholder="F/0001"></div>
           <div><label>Nombre del fideicomiso</label><input type="text" id="f-nombre" value="${esc(F.nombre)}" placeholder="Traslativo inmobiliario…"></div>
           <div><label>Actividad del fideicomiso <span class="tag t-AUTO" title="Informativa: alimenta reglas y política; no pondera">REGLAS</span></label>
-            <select data-f="actividadFid">${opts("actividad",F.actividadFid||"No capturada")}</select>
+            <select data-f="actividadFid">${opts("actFid",F.actividadFid||"No capturada")}</select>
             <div class="f-lvl">Entidad auxiliar del crédito → ALTO por política interna</div></div>
           ${FF_DEF.map(([k,lab,cat])=>`<div><label>${lab}${tag(k)}</label>
             <select data-f="${k}" data-cat="${cat}">${opts(cat,F[k])}</select>
@@ -636,7 +653,7 @@ function render(){
           <thead><tr><th>Nombre</th>${FI_DEF.map(([k,l])=>`<th>${l}${tag(k)}</th>`).join("")}<th>Alertas</th><th>Riesgo</th><th></th></tr></thead>
           <tbody>${F.integrantes.map((p,i)=>{const sc=effInt(p),b=p.lista?"PROHIBITIVO":banda(sc);return `<tr>
             <td class="nm"><input type="text" data-i="${i}" data-k="nombre" value="${esc(p.nombre)}" placeholder="Nombre de la parte"></td>
-            ${FI_DEF.map(([k,,cat])=>`<td><select data-i="${i}" data-k="${k}" data-cat="${cat}">${opts(cat,p[k])}</select></td>`).join("")}
+            ${FI_DEF.map(([k,,cat])=>{const cc=k==="edad"?catEdad(p):cat;return `<td><select data-i="${i}" data-k="${k}" data-cat="${cc}">${opts(cc,p[k])}</select></td>`}).join("")}
             <td><div class="flags">
               <label><input type="checkbox" data-i="${i}" data-k="pep" ${p.pep?"checked":""}>PEP</label>
               <label><input type="checkbox" data-i="${i}" data-k="lista" ${p.lista?"checked":""}>Listas</label>
@@ -772,7 +789,9 @@ function bind(){
   document.querySelectorAll("[data-i]").forEach(el=>{
     const i=+el.dataset.i,k=el.dataset.k;
     if(el.type==="checkbox")el.onchange=e=>{F.integrantes[i][k]=e.target.checked;render()};
-    else if(el.tagName==="SELECT")el.onchange=e=>{F.integrantes[i][k]=e.target.value;render()};
+    else if(el.tagName==="SELECT")el.onchange=e=>{const P=F.integrantes[i];P[k]=e.target.value;
+      if(k==="tipoPersona"&&!CAT[catEdad(P)].some(x=>x[0]===P.edad))P.edad=esPF(P)?"25 a 50 años":"Más de 10 años";
+      render()};
     else el.oninput=e=>{F.integrantes[i][k]=e.target.value};
   });
   document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{
@@ -860,10 +879,11 @@ async function plantillaCSV(){
     ej.usd,ej.desv,"No capturada",n,p.rol,p.tipoPersona,p.actividad,p.paisNac,p.nacionalidad,p.paisDom,p.estadoDom,p.edad,"NO","NO","NO"];
   const vals=["","VALORES VÁLIDOS POR COLUMNA (copie exactamente uno):","",
     ...Object.entries({Tipologia:"tipologia",Patrimonio:"patrimonio",Valor:"valor",AntiguedadFid:"antig",
-      ActividadVulnerable:"av",Procedencia:"proc",USD:"usd",Desviacion:"desv",ActividadFideicomiso:"actividad",Rol:"rol",
+      ActividadVulnerable:"av",Procedencia:"proc",USD:"usd",Desviacion:"desv",ActividadFideicomiso:"actFid",Rol:"rol",
       TipoPersona:"tipoPersona",ActividadEconomica:"actividad",PaisNacimiento:"pais",Nacionalidad:"pais",
       PaisDomicilio:"pais",EstadoDomicilio:"estado",AntiguedadParte:"edad"})
-      .map(([c,k])=>c+": "+CAT[k].map(x=>x[0]).join(" | "))];
+      .map(([c,k])=>c+": "+CAT[k].map(x=>x[0]).join(" | "))
+      .concat(["AntiguedadParte si TipoPersona es PF (edad de la persona): "+CAT.edadPF.map(x=>x[0]).join(" | ")])];
   const csv="\ufeff"+[csvLine(COLS),csvLine(fila("Parte 1")),csvLine(fila("Parte 2"))].join("\r\n")
     +"\r\n"+vals.map(v=>csvLine([v])).join("\r\n");
   await descarga("plantilla_captura_fideicomisos.csv",csv,"text/csv");
@@ -899,12 +919,13 @@ function importaCSV(e){
           const f=nuevoFid();f.integrantes=[];f.id=id;f.nombre=(row[idx.Fideicomiso]||"").trim();
           for(const col in MAPF){const k=MAPF[col];const cat=FF_DEF.find(x=>x[0]===k)[2];
             f[k]=valida(cat,(row[idx[col]]||"").trim(),f[k]);}
-          if(idx.ActividadFideicomiso!==undefined)f.actividadFid=valida("actividad",(row[idx.ActividadFideicomiso]||"").trim(),f.actividadFid);
+          if(idx.ActividadFideicomiso!==undefined)f.actividadFid=valida("actFid",(row[idx.ActividadFideicomiso]||"").trim(),f.actividadFid);
           porId[id]=f;
         }
         const p=nuevoInt();p.nombre=(row[idx.NombreParte]||"").trim();
         for(const col in MAPI){const k=MAPI[col];
-          const cat=(k==="paisNac"||k==="nacionalidad"||k==="paisDom")?"pais":(k==="estadoDom"?"estado":k);
+          const cat=k==="edad"?catEdad(p):((k==="paisNac"||k==="nacionalidad"||k==="paisDom")?"pais":(k==="estadoDom"?"estado":k));
+          if(k==="edad"&&!esPF(p)&&p.edad==="25 a 50 años")p.edad="Más de 10 años";
           p[k]=valida(cat,(row[idx[col]]||"").trim(),p[k]);}
         const si=v=>/^(s[ií]|si|x|1|true)$/i.test(String(v||"").trim());
         p.pep=si(row[idx.PEP]);p.lista=si(row[idx.Listas]);p.bc=si(row[idx.BCsinIdentificar]);
