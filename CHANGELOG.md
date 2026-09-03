@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.7.2 — 2026-09-03
+- FI1 Tipo de persona depurado a forma jurídica pura: Persona física (1) · PF con actividad empresarial (2) · Persona moral (3) · Mandato (4) · Fideicomiso/vehículo (5). Se eliminó «PM extranjera» (doble conteo: lo extranjero ya lo miden país de nacimiento, nacionalidad y domicilio, 31% del peso). Los registros guardados con valores anteriores se migran solos al calificar.
+- Edad PF en forma de U: mayores de 65 años suben a nivel 4 (tipología de adultos mayores como prestanombres), igual que 18–24 y menores de edad.
+- TR-26 ajustada: interposición = persona moral/mandato/vehículo con domicilio fuera de México en rol de control.
+- Matriz v2.2 y Layout v1.3 homologados con ambos cambios.
+
 ## v1.7.1 — 2026-09-03
 - FI7 «Edad / antigüedad» ahora es dinámico por tipo de persona: personas físicas califican por EDAD (25–50, 51–65, +65, 18–24, menor de edad) y morales/vehículos por ANTIGÜEDAD de constitución. El combo cambia solo al cambiar el tipo de persona; la importación CSV valida según el tipo de cada fila.
 - Layout v1.3: catálogo «Edad / antigüedad parte» ampliado con los rangos de edad de PF. Matriz Excel v2.2 con el mismo catálogo en FI7.
