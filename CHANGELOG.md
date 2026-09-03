@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.7.3 — 2026-09-03
+- Botones de descarga del Layout de carga y de la Matriz del modelo (Excel) junto al importador de CSV — siempre bajan la versión vigente del sitio; solo visibles cuando la app corre publicada.
+
 ## v1.7.2 — 2026-09-03
 - FI1 Tipo de persona depurado a forma jurídica pura: Persona física (1) · PF con actividad empresarial (2) · Persona moral (3) · Mandato (4) · Fideicomiso/vehículo (5). Se eliminó «PM extranjera» (doble conteo: lo extranjero ya lo miden país de nacimiento, nacionalidad y domicilio, 31% del peso). Los registros guardados con valores anteriores se migran solos al calificar.
 - Edad PF en forma de U: mayores de 65 años suben a nivel 4 (tipología de adultos mayores como prestanombres), igual que 18–24 y menores de edad.
