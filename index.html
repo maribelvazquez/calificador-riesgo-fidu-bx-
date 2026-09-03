@@ -11,6 +11,7 @@
   --accent:#a4c425;
   --b1:#d8dee0; --b2:#9fb0b5; --b3:#56707a; --b4:#2e383e;
   --focus:#2fa3a0; --on-brand:#ffffff;
+  --sem-1:#2f8f4e; --sem-2:#cfa50e; --sem-3:#d95f02; --sem-4:#9e1b16;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --ink:#e8ecee; --ink-2:#b6c1c6; --ink-3:#87939a;
@@ -77,11 +78,11 @@ td select,td input{padding:5px 6px;font-size:12px;min-width:96px}
 td.nm input{min-width:150px}
 .chip{display:inline-block;padding:2px 9px;border-radius:11px;font-size:10.5px;font-weight:700;
   letter-spacing:.04em;white-space:nowrap;color:#fff}
-.b-BAJO{background:var(--b1);color:var(--ink)}
-.b-MEDIO{background:var(--b2);color:#fff}
-.b-MEDIOALTO{background:var(--b3);color:var(--on-brand)}
-.b-ALTO{background:var(--b4);color:var(--on-brand)}
-.b-PROHIBITIVO{background:var(--b4);box-shadow:inset 0 0 0 2px var(--ground),0 0 0 2px var(--b4)}
+.b-BAJO{background:var(--sem-1);color:#fff}
+.b-MEDIO{background:var(--sem-2);color:#1c2327}
+.b-MEDIOALTO{background:var(--sem-3);color:#fff}
+.b-ALTO{background:var(--sem-4);color:#fff}
+.b-PROHIBITIVO{background:#7a1712;color:#fff;box-shadow:inset 0 0 0 2px var(--ground),0 0 0 2px #7a1712}
 button{font-family:inherit;font-size:12.5px;font-weight:600;border-radius:6px;cursor:pointer;
   padding:7px 13px;border:1px solid var(--line);background:var(--ground);color:var(--ink)}
 button:hover{border-color:var(--brand-3)}
@@ -98,6 +99,7 @@ aside{position:sticky;top:16px}
 .score .num{font-family:"Source Serif 4",serif;font-size:52px;font-weight:700;line-height:1;
   margin:7px 0 3px;font-variant-numeric:tabular-nums}
 .score .band{font-size:15px;font-weight:700;letter-spacing:.05em}
+.score .band .chip{font-size:12.5px;padding:3px 12px}
 .brk{margin-top:13px;border-top:1px solid rgba(255,255,255,.22);padding-top:11px;display:grid;gap:5px}
 .brk div{display:flex;justify-content:space-between;font-size:11.5px;gap:10px}
 .brk span:last-child{font-variant-numeric:tabular-nums;font-weight:700}
@@ -127,18 +129,23 @@ aside{position:sticky;top:16px}
 .tb tr.tot td{background:var(--surface-2);font-weight:700;border-top:2px solid var(--brand-2)}
 .tb tr.fin td{background:var(--brand);color:var(--on-brand);font-weight:700}
 .tb tr.fin .chip{background:var(--ground);color:var(--brand)}
+.pbar-row{display:flex;align-items:center;gap:9px;margin:4px 0}
+.pbar-lbl{width:96px;font-size:10.5px;font-weight:600;letter-spacing:.03em;color:var(--ink-2);text-align:right}
+.pbar{flex:1;height:13px;background:var(--surface-2);border-radius:4px;overflow:hidden}
+.pbar i{display:block;height:100%;border-radius:0 4px 4px 0}
+.pbar-n{width:36px;font-weight:700;font-variant-numeric:tabular-nums;font-size:12.5px}
 .bar{height:7px;border-radius:4px;background:var(--surface-2);overflow:hidden;min-width:56px}
 .bar i{display:block;height:100%;background:var(--brand-2)}
 .rec{border-left:3px solid var(--brand-2);background:var(--ground);border:1px solid var(--line);
   border-left-width:3px;border-radius:0 6px 6px 0;padding:9px 12px;margin-bottom:8px}
-.rec.p1{border-left-color:var(--b4)}
-.rec.p2{border-left-color:var(--brand-3)}
+.rec.p1{border-left-color:var(--sem-4)}
+.rec.p2{border-left-color:var(--sem-3)}
 .rec.p3{border-left-color:var(--b2)}
 .rec b{display:block;font-size:12.5px;color:var(--ink);margin-bottom:2px}
 .rec small{color:var(--ink-3);font-size:10.5px;display:block;margin-top:3px}
 .pr{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;
   margin-right:6px;letter-spacing:.04em;vertical-align:1px}
-.pr1{background:var(--b4);color:var(--on-brand)}.pr2{background:var(--brand-3);color:var(--on-brand)}
+.pr1{background:var(--sem-4);color:#fff}.pr2{background:var(--sem-3);color:#fff}
 .pr3{background:var(--surface-2);color:var(--ink-2)}
 .btn-o{padding:3px 9px;font-size:11px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -191,6 +198,8 @@ function effInt(p){const s=scoreInt(p);if(p.lista)return 500;
 function lvl(cat,val){const f=CAT[cat].find(x=>x[0]===val);return f?f[1]:1;}
 function banda(s){return s>=291?"ALTO":s>=259?"MEDIO ALTO":s>=224?"MEDIO":"BAJO";}
 function cls(b){return "b-"+b.replace(/\s/g,"");}
+function proxRev(b,fecha){const M={"PROHIBITIVO":6,"ALTO":6,"MEDIO ALTO":12,"MEDIO":24,"BAJO":36}[b]||12;
+  const d=fecha?new Date(fecha+"T12:00:00"):new Date();d.setMonth(d.getMonth()+M);return d.toISOString().slice(0,10);}
 function partesLvl(n){return n<=3?1:n<=6?2:n<=10?3:5;}
 
 let FILTRO="";
@@ -364,6 +373,14 @@ const REGLAS=[
  ["TR-23",2,(f)=>["Inmobiliario / construcción","Comercio exterior","Efectivo intensivo"].indexOf(f.actividadFid)>-1,"Giro de riesgo del fideicomiso",
   "El objeto del fideicomiso corresponde a un sector de alta vulnerabilidad: monitoreo reforzado de las operaciones del vehiculo y soporte documental de cada evento patrimonial.",
   "Anexo 3 DCG · ENR 2023"],
+ ["TR-24",1,(f)=>f.tipologia==="Traslativo de dominio"&&f.proc!=="Bancarizados con soporte"&&f.proc!=="Venta de activos documentada",
+  "Transmision de dominio sin origen trazable",
+  "Tipologia de lavado inmobiliario: aportacion de inmuebles a fideicomiso traslativo sin financiamiento regulado ni origen documentado. No formalizar la transmision hasta acreditar el origen de los recursos y el avaluo del bien.",
+  "Tipologia UIF/GAFI: transferencias inmobiliarias no financiadas"],
+ ["TR-26",2,(f,R)=>R.ints.some(p=>p.tipoPersona==="PM extranjera"&&["Régimen fiscal preferente","Lista GAFI gris","Lista GAFI negra / sancionado","Otro país","Norteamérica / Europa (bajo riesgo)"].indexOf(p.paisDom)>-1&&p.rol!=="Fideicomisario"),
+  "Estructura extranjera interpuesta - desglosar UBO",
+  "Persona moral extranjera con control u origen en el fideicomiso: desglosar la cadena hasta la persona fisica con mas del 25% y documentar la logica economica de la interposicion. No presumir transparencia de sociedades de EE.UU. (LLC): la exencion de reporte de beneficiarios en ese pais obliga a diligencia directa.",
+  "BC >25% LFPIORPI · GAFI R.24/25 · Exencion CTA FinCEN (EE.UU.)"],
  ["TR-30",3,(f,R)=>R.ints.some(p=>p.actividad==="No capturada"),"Completar la actividad economica de las partes",
   "Existe el campo en el sistema pero no esta poblado: capturar el giro de cada parte para elevar la precision del modelo.",
   "Hallazgo del recorrido en sistema (V2, prioridad 1)"]
@@ -398,7 +415,7 @@ function tablero(R){
         <th>En alto</th><th>Banda del grupo</th><th>Peso</th><th>Aporte</th></tr></thead>
       <tbody>${S.map(x=>`<tr><td>${esc(x.rol)}</td><td>${x.n}</td><td>${x.min}</td>
         <td><b>${x.prom}</b><div class="bar"><i style="width:${Math.round(x.prom/maxP*100)}%"></i></div></td>
-        <td>${x.max}</td><td>${x.alto?`<b style="color:var(--b4)">${x.alto}</b>`:"0"}</td><td><span class="chip ${cls(banda(x.prom))}">${banda(x.prom)}</span></td>
+        <td>${x.max}</td><td>${x.alto?`<b style="color:var(--sem-4)">${x.alto}</b>`:"0"}</td><td><span class="chip ${cls(banda(x.prom))}">${banda(x.prom)}</span></td>
         <td>${Math.round(x.pesoN*100)}%</td><td>${x.aporte}</td></tr>`).join("")}
         <tr class="tot"><td>Ponderado de integrantes</td><td>${R.ints.length}</td><td colspan="4"></td>
           <td>100%</td><td>${R.pond}</td></tr>
@@ -421,7 +438,7 @@ function tablero(R){
           <td><span class="chip ${cls(banda(R.peor))}">${banda(R.peor)}</span></td>
           <td>${R.peor>=291?"Manda: es ALTO":"No manda (menor que ALTO)"}</td></tr>
         <tr class="fin"><td>Grado de riesgo consolidado</td><td>${R.final}</td>
-          <td><span class="chip">${R.banda}</span></td>
+          <td><span class="chip ${cls(R.banda)}">${R.banda}</span></td>
           <td>${R.inval?esc(R.inval):"Mayor entre los anteriores"}</td></tr>
       </tbody></table></div>
   </div>`;
@@ -459,7 +476,8 @@ function pdfCedula(){
   box(M,y-56,PW-2*M,56,AZ);
   T(M+14,y-22,"GRADO DE RIESGO CONSOLIDADO",8.5,true,[164,196,37]);
   T(M+14,y-46,String(R.final),24,true,[255,255,255]);
-  T(M+82,y-46,R.banda,14,true,[255,255,255]);
+  const SEMPDF={BAJO:[86,178,116],MEDIO:[230,183,52],"MEDIO ALTO":[235,124,64],ALTO:[236,98,90],PROHIBITIVO:[236,98,90]};
+  T(M+82,y-46,R.banda,14,true,SEMPDF[R.banda]||[255,255,255]);
   TR(PW-M-14,y-22,"Estructural "+R.estr+"   Ponderado "+R.pond+"   Peor parte "+R.peor,9,false,[196,205,210]);
   if(R.inval)TR(PW-M-14,y-42,R.inval,8.5,true,[255,255,255]);
   y-=74;
@@ -491,7 +509,8 @@ function pdfCedula(){
     [["Estructural del vehiculo",R.estr,banda(R.estr),"9 factores del fideicomiso"],
      ["Ponderado de integrantes",R.pond,banda(R.pond),"Promedio por rol, ponderado por rol"],
      ["Peor parte",R.peor,banda(R.peor),R.peor>=291?"Manda: la peor parte es ALTO":"No manda"],
-     ["*Grado de riesgo consolidado","*"+R.final,"*"+R.banda,R.inval||"Mayor entre los anteriores"]]);
+     ["*Grado de riesgo consolidado","*"+R.final,"*"+R.banda,R.inval||"Mayor entre los anteriores"],
+     ["Proxima revision sugerida",proxRev(R.banda,null),"","ALTO 6m - MEDIO ALTO 12m - MEDIO 24m - BAJO 36m"]]);
   // recomendaciones
   const rs=recomienda(F,R);
   need(30+rs.length*30);
@@ -661,8 +680,31 @@ function render(){
             return n?`<div class="stat"><b>${n}</b><span>${b}</span></div>`:""}).join("")}
           <div class="stat"><b>${Math.round(REG.reduce((a,x)=>a+x.final,0)/REG.length)}</b><span>Promedio</span></div>
         </div>
+        <h3>Distribución por grado de riesgo</h3>
+        ${(()=>{const BL=["BAJO","MEDIO","MEDIO ALTO","ALTO","PROHIBITIVO"];
+          const CC={"BAJO":"var(--sem-1)","MEDIO":"var(--sem-2)","MEDIO ALTO":"var(--sem-3)","ALTO":"var(--sem-4)","PROHIBITIVO":"#7a1712"};
+          const mx=Math.max.apply(null,BL.map(b=>REG.filter(x=>x.banda===b).length).concat([1]));
+          return BL.map(b=>{const n=REG.filter(x=>x.banda===b).length;
+            return `<div class="pbar-row" title="${b}: ${n} de ${REG.length}"><span class="pbar-lbl">${b}</span><div class="pbar"><i style="width:${n?Math.max(n/mx*100,3):0}%;background:${CC[b]}"></i></div><span class="pbar-n">${n}</span></div>`}).join("")})()}
+        <h3>Por actividad vulnerable (LFPIORPI)</h3>
+        <div class="tw"><table><thead><tr><th>Clasificación</th><th>Fideicomisos</th><th>%</th><th>En alto</th><th>Promedio</th></tr></thead><tbody>
+        ${(()=>{const L=x=>{const v=(x.fid&&x.fid.av)||"";return v.indexOf("Tipo B")>-1?"Tipo B — AV confirmada (Art. 17)":v.indexOf("Tipo C")>-1?"Tipo C — en dictamen":v.indexOf("Tipo A")>-1?"Tipo A — sin actividad vulnerable":"Sin dato"};
+          const g={};REG.forEach(x=>{(g[L(x)]=g[L(x)]||[]).push(x)});
+          return ["Tipo B — AV confirmada (Art. 17)","Tipo C — en dictamen","Tipo A — sin actividad vulnerable","Sin dato"].filter(k=>g[k]).map(k=>{
+            const a=g[k];const alto=a.filter(x=>x.banda==="ALTO"||x.banda==="PROHIBITIVO").length;
+            const prom=Math.round(a.reduce((s,x)=>s+x.final,0)/a.length);
+            return `<tr><td>${k}</td><td>${a.length}</td><td>${Math.round(a.length/REG.length*100)}%</td><td>${alto?`<b style="color:var(--sem-4)">${alto}</b>`:"0"}</td><td><b>${prom}</b> <span class="chip ${cls(banda(prom))}">${banda(prom)}</span></td></tr>`}).join("")})()}
+        </tbody></table></div>
+        ${(()=>{const nm={};REG.forEach(x=>{((x.fid&&x.fid.integrantes)||[]).forEach(p=>{const k=String(p.nombre||"").trim().toLowerCase().replace(/\s+/g," ");if(k.length<6)return;(nm[k]=nm[k]||new Set()).add(String(x.id||x.nombre||"?"))})});
+          const rep=Object.keys(nm).filter(k=>nm[k].size>1);
+          return rep.length?`<h3>Partes presentes en varios fideicomisos</h3>
+          <div class="hint">Señal de alerta (firmantes o fideicomitentes recurrentes): documentar el vínculo económico entre los fideicomisos relacionados.</div>
+          <div class="tw"><table><thead><tr><th>Parte</th><th>Aparece en</th><th>Fideicomisos</th></tr></thead><tbody>
+          ${rep.map(k=>`<tr><td style="text-transform:capitalize">${esc(k)}</td><td><b style="color:var(--sem-3)">${nm[k].size}</b></td><td style="font-size:11px;color:var(--ink-2)">${esc(Array.from(nm[k]).join(" · "))}</td></tr>`).join("")}
+          </tbody></table></div>`:""})()}
+        <h3>Fideicomisos capturados</h3>
         <div class="tw"><table><thead><tr><th>ID</th><th>Fideicomiso</th><th>Partes</th><th>Estruct.</th>
-          <th>Ponderado</th><th>Peor parte</th><th>Final</th><th>Banda</th><th>Actualizado</th><th></th></tr></thead>
+          <th>Ponderado</th><th>Peor parte</th><th>Final</th><th>Banda</th><th>Actualizado</th><th>Próx. revisión</th><th></th></tr></thead>
           <tbody>${REG.map((x,ri)=>({x,ri})).filter(v=>{if(!FILTRO)return true;const q=FILTRO.toLowerCase();
             return String(v.x.id||"").toLowerCase().indexOf(q)>-1||String(v.x.nombre||"").toLowerCase().indexOf(q)>-1||String(v.x.banda||"").toLowerCase().indexOf(q)>-1;})
             .map(({x,ri:i})=>`<tr${i===EDIT?' style="outline:2px solid var(--brand-3);outline-offset:-2px"':""}><td>${esc(x.id||"—")}</td><td>${esc(x.nombre||"—")}</td>
@@ -673,6 +715,7 @@ function render(){
             <td style="font-variant-numeric:tabular-nums"><b>${x.final}</b></td>
             <td><span class="chip ${cls(x.banda)}">${x.banda}</span></td>
             <td style="font-size:11px;color:var(--ink-3)">${esc(x.fecha||"—")}</td>
+            <td style="font-size:11px;font-variant-numeric:tabular-nums;${proxRev(x.banda,x.fecha||null)<=new Date().toISOString().slice(0,10)?"color:var(--sem-4);font-weight:700":"color:var(--ink-3)"}">${proxRev(x.banda,x.fecha||null)}</td>
             <td style="white-space:nowrap"><button class="btn-o" data-open="${i}">Abrir</button>
             <button class="btn-x" data-delreg="${i}" title="Quitar">×</button></td></tr>`).join("")}
           </tbody></table></div>
@@ -697,15 +740,16 @@ function render(){
       <div class="score">
         <div class="lbl">Grado de riesgo consolidado</div>
         <div class="num">${R.final}</div>
-        <div class="band">${R.banda}</div>
+        <div class="band"><span class="chip ${cls(R.banda)}">${R.banda}</span></div>
         <div class="brk">
           <div><span>Estructural del vehículo</span><span>${R.estr}</span></div>
           <div><span>Ponderado por rol</span><span>${R.pond}</span></div>
           <div><span>Peor parte</span><span>${R.peor}</span></div>
           <div><span>Integrantes</span><span>${F.integrantes.length}</span></div>
+          <div><span>Próxima revisión sugerida</span><span>${proxRev(R.banda,null)}</span></div>
         </div>
       </div>
-      ${R.inval?`<div class="warn" style="border-color:var(--b4)"><b>${R.inval}</b></div>`:""}
+      ${R.inval?`<div class="warn" style="border-color:var(--sem-4)"><b>${R.inval}</b></div>`:""}
       <div class="card roles" style="margin-top:16px">
         <h2 style="font-size:14px">Grupos de rol</h2>
         <div class="hint">Promedio dentro del rol y peso relativo.</div>
@@ -907,8 +951,8 @@ function docHTMLNoUsado(){
 }
 function guarda(msg){persiste();render();if(msg)toast(msg);}
 async function exportCSV(){
-  const hd=["ID","Fideicomiso","Partes","Estructural","Ponderado","PeorParte","Final","Banda","Actualizado"];
-  const rows=REG.map(x=>[x.id,x.nombre,x.nPartes,x.estr,x.pond,x.peor,x.final,x.banda,x.fecha||""]
+  const hd=["ID","Fideicomiso","Partes","Estructural","Ponderado","PeorParte","Final","Banda","Actualizado","ProximaRevision"];
+  const rows=REG.map(x=>[x.id,x.nombre,x.nPartes,x.estr,x.pond,x.peor,x.final,x.banda,x.fecha||"",proxRev(x.banda,x.fecha||null)]
     .map(v=>'"'+String(v==null?"":v).replace(/"/g,'""')+'"').join(","));
   await descarga("registro_fideicomisos.csv","\ufeff"+[hd.join(",")].concat(rows).join("\r\n"),"text/csv");
 }
