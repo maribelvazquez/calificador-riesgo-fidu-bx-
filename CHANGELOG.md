@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.5.1 — 2026-09-02
+- Firebase activado: firebaseConfig del proyecto `calificador-fiduciario` integrado en index.html (login por correo/contraseña del equipo, registro compartido en Firestore).
+- Aviso inferior coherente con el modo: en nube sin sesión ya no muestra el texto del modo local; indica iniciar sesión para usar el registro compartido.
+- data/base_variables_bx.csv: agregados los CATÁLOGOS OPERATIVOS V1 (serie 9100) de integrantes, homologados con la Matriz Excel v2.1.
+
 ## v1.5 — 2026-08-27
 - Modo nube (Firebase Auth + Firestore), bimodal: con firebaseConfig pegado, el registro es compartido para todo el equipo, con login por usuario, sincronización en vivo, historial de recalificaciones por fideicomiso y botón para migrar lo guardado en modo local. Sin config (o donde Firebase no carga), sigue el modo local por navegador.
 
