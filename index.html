@@ -10,7 +10,7 @@
   --brand:#2e383e; --brand-2:#46525a; --brand-3:#2fa3a0; --brand-soft:#eef3ee;
   --accent:#a4c425;
   --b1:#d8dee0; --b2:#9fb0b5; --b3:#56707a; --b4:#2e383e;
-  --focus:#2fa3a0;
+  --focus:#2fa3a0; --on-brand:#ffffff;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --ink:#e8ecee; --ink-2:#b6c1c6; --ink-3:#87939a;
@@ -18,7 +18,7 @@
   --brand:#c3cdd2; --brand-2:#9fb0b5; --brand-3:#4fc4c0; --brand-soft:#20282c;
   --accent:#b8d63c;
   --b1:#39444a; --b2:#5d6d75; --b3:#4fa5a2; --b4:#cdd8dc;
-  --focus:#4fc4c0;
+  --focus:#4fc4c0; --on-brand:#14181b;
 }}
 :root[data-theme="dark"]{
   --ink:#e8ecee; --ink-2:#b6c1c6; --ink-3:#87939a;
@@ -26,7 +26,7 @@
   --brand:#c3cdd2; --brand-2:#9fb0b5; --brand-3:#4fc4c0; --brand-soft:#20282c;
   --accent:#b8d63c;
   --b1:#39444a; --b2:#5d6d75; --b3:#4fa5a2; --b4:#cdd8dc;
-  --focus:#4fc4c0;
+  --focus:#4fc4c0; --on-brand:#14181b;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--ground);color:var(--ink);
@@ -58,8 +58,8 @@ select:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid 
 .f-lvl{font-size:10.5px;color:var(--ink-3);margin-top:3px;font-variant-numeric:tabular-nums}
 .tag{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.05em;padding:1px 5px;
   border-radius:3px;margin-left:5px;vertical-align:1px}
-.t-V1{background:var(--brand);color:#fff}
-.t-V1x{background:var(--brand-3);color:#fff}
+.t-V1{background:var(--brand);color:var(--on-brand)}
+.t-V1x{background:var(--brand-3);color:var(--on-brand)}
 .t-V2{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
 .t-AUTO{background:var(--brand-soft);color:var(--brand-2)}
 .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:11px;color:var(--ink-3);margin-bottom:12px}
@@ -70,7 +70,7 @@ select:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid 
 input[type=file]{font-family:inherit;font-size:11.5px;color:var(--ink-2);max-width:230px}
 table{width:100%;border-collapse:collapse}
 .tw{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--ground)}
-th{background:var(--brand);color:#fff;font-size:10px;letter-spacing:.05em;text-transform:uppercase;
+th{background:var(--brand);color:var(--on-brand);font-size:10px;letter-spacing:.05em;text-transform:uppercase;
   padding:7px 6px;text-align:left;font-weight:600;white-space:nowrap}
 td{padding:5px 6px;border-top:1px solid var(--line);font-size:12.5px;vertical-align:middle}
 td select,td input{padding:5px 6px;font-size:12px;min-width:96px}
@@ -79,13 +79,13 @@ td.nm input{min-width:150px}
   letter-spacing:.04em;white-space:nowrap;color:#fff}
 .b-BAJO{background:var(--b1);color:var(--ink)}
 .b-MEDIO{background:var(--b2);color:#fff}
-.b-MEDIOALTO{background:var(--b3)}
-.b-ALTO{background:var(--b4)}
+.b-MEDIOALTO{background:var(--b3);color:var(--on-brand)}
+.b-ALTO{background:var(--b4);color:var(--on-brand)}
 .b-PROHIBITIVO{background:var(--b4);box-shadow:inset 0 0 0 2px var(--ground),0 0 0 2px var(--b4)}
 button{font-family:inherit;font-size:12.5px;font-weight:600;border-radius:6px;cursor:pointer;
   padding:7px 13px;border:1px solid var(--line);background:var(--ground);color:var(--ink)}
 button:hover{border-color:var(--brand-3)}
-.btn-p{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn-p{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
 .btn-p:hover{background:var(--brand-2);border-color:var(--brand-2)}
 .btn-x{padding:4px 8px;font-size:15px;line-height:1;color:var(--ink-3);border:none;background:none}
 .btn-x:hover{color:var(--b4)}
@@ -93,7 +93,7 @@ button:hover{border-color:var(--brand-3)}
 .rowtools input[type=number]{width:62px;padding:6px 7px;border:1px solid var(--line);border-radius:5px;
   background:var(--ground);color:var(--ink);font-family:inherit}
 aside{position:sticky;top:16px}
-.score{background:var(--brand);color:#fff;border-radius:8px;padding:17px}
+.score{background:var(--brand);color:var(--on-brand);border-radius:8px;padding:17px}
 .score .lbl{font-size:10px;letter-spacing:.12em;text-transform:uppercase;opacity:.82;font-weight:600}
 .score .num{font-family:"Source Serif 4",serif;font-size:52px;font-weight:700;line-height:1;
   margin:7px 0 3px;font-variant-numeric:tabular-nums}
@@ -116,7 +116,7 @@ aside{position:sticky;top:16px}
   font-variant-numeric:tabular-nums;line-height:1.15}
 .stat span{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:22px;background:var(--brand);
-  color:#fff;padding:10px 18px;border-radius:7px;font-size:13px;font-weight:600;z-index:99;
+  color:var(--on-brand);padding:10px 18px;border-radius:7px;font-size:13px;font-weight:600;z-index:99;
   box-shadow:0 6px 22px rgba(0,0,0,.24)}
 .warn{background:var(--brand-soft);border-left:3px solid var(--brand-2);padding:9px 12px;
   border-radius:0 5px 5px 0;font-size:11.5px;color:var(--ink-2);margin-top:11px}
@@ -125,8 +125,8 @@ aside{position:sticky;top:16px}
   margin:16px 0 7px;letter-spacing:.01em}
 .tb td{font-variant-numeric:tabular-nums}
 .tb tr.tot td{background:var(--surface-2);font-weight:700;border-top:2px solid var(--brand-2)}
-.tb tr.fin td{background:var(--brand);color:#fff;font-weight:700}
-.tb tr.fin .chip{background:#fff;color:var(--brand)}
+.tb tr.fin td{background:var(--brand);color:var(--on-brand);font-weight:700}
+.tb tr.fin .chip{background:var(--ground);color:var(--brand)}
 .bar{height:7px;border-radius:4px;background:var(--surface-2);overflow:hidden;min-width:56px}
 .bar i{display:block;height:100%;background:var(--brand-2)}
 .rec{border-left:3px solid var(--brand-2);background:var(--ground);border:1px solid var(--line);
@@ -138,7 +138,7 @@ aside{position:sticky;top:16px}
 .rec small{color:var(--ink-3);font-size:10.5px;display:block;margin-top:3px}
 .pr{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;
   margin-right:6px;letter-spacing:.04em;vertical-align:1px}
-.pr1{background:var(--b4);color:#fff}.pr2{background:var(--brand-3);color:#fff}
+.pr1{background:var(--b4);color:var(--on-brand)}.pr2{background:var(--brand-3);color:var(--on-brand)}
 .pr3{background:var(--surface-2);color:var(--ink-2)}
 .btn-o{padding:3px 9px;font-size:11px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
