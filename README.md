@@ -1,93 +1,33 @@
-# Calificador de Riesgo Fiduciario
+# Cotizador de Capacitación Anual PLD/FT · 360Educa
 
-Instrumento provisional de **grado de riesgo de cliente** para fideicomisos (proyecto B por Más · Lex Quo), en lo que se libera el sistema definitivo. Califica cada fideicomiso y a cada uno de sus integrantes, consolida el riesgo en escala 100–500 (bandas de la Tabla 5 de la Matriz BX+), aplica invalidaciones (PEP, listas, BC) y emite recomendaciones de tratamiento con fundamento normativo.
+Página que arma el programa anual de capacitación por perfil de puesto, aplica el
+descuento por volumen y genera dos documentos descargables: la cotización con folio
+y una guía para elaborar el Programa Anual de Capacitación y Difusión.
 
-> ⚠️ **Repositorio privado.** Contiene la lógica del modelo de riesgo del cliente; no publicar.
+Es un solo archivo HTML. No requiere servidor, base de datos ni plugins.
 
-## La app es un solo archivo
+## Contenido del repositorio
 
-`index.html` es la aplicación completa: HTML + CSS + JS, sin build, sin dependencias, sin backend. Es deliberado: se despliega arrastrando el archivo y no hay nada que compilar ni actualizar de terceros. Todo el motor (catálogos, pesos, consolidación, reglas, generador de PDF) vive ahí.
-
-## Funciones
-
-- Captura de fideicomiso + integrantes sin límite (alta individual, masiva "n iguales" o importación CSV).
-- Cálculo en vivo: riesgo por integrante, estructural del vehículo, ponderado por grupo de rol, peor parte, consolidado y banda.
-- Invalidaciones tipo A (PEP, BC no identificado → mínimo ALTO) y tipo B (listas → PROHIBITIVO).
-- Tablero por rol, distribución por banda y armado de la calificación.
-- **Cédula PDF** con branding Lex Quo (composición por rol, armado, recomendaciones, detalle de integrantes).
-- Base de reglas de tratamiento y monitoreo (`docs/REGLAS_TRATAMIENTO.md`).
-- Registro local con reabrir/actualizar y exportación CSV.
-- Etiquetas de trazabilidad por factor (V1 / V1* / V2 / AUTO) según el recorrido en sistema.
-
-## Privacidad de datos
-
-Los datos capturados viven **solo en el navegador de quien captura** (`localStorage`); la página no los envía a ningún lado. La vía de salida es la exportación CSV / cédula PDF. Quien abre el enlace encuentra la app en blanco.
-
-## Despliegue
-
-**Netlify:** arrastrar `index.html` (o conectar este repo) → Site configuration → activar *Password protection*. `netlify.toml` ya trae encabezados de no-indexación.
-
-**Artifact de Claude:** la app también corre publicada como artifact (mismo archivo).
-
-## Modo nube (Firebase) — registro compartido del equipo
-
-La app es **bimodal**: sin configuración trabaja en modo local (datos por navegador); con Firebase,
-el registro es compartido — todos ven lo mismo desde cualquier navegador, con login por usuario e
-historial de recalificaciones por fideicomiso.
-
-Para activarlo (10 minutos, consola de Firebase):
-
-1. **Crear proyecto** en console.firebase.google.com (o usar el existente).
-2. **Authentication → Sign-in method → Email/contraseña: habilitar.** En Users, crear las cuentas
-   del equipo (Héctor, Sabrina, Fernando, Maribel…) con su contraseña.
-3. **Firestore Database → crear base** (modo producción) y en Rules pegar:
-   ```
-   rules_version = '2';
-   service cloud.firestore {
-     match /databases/{database}/documents {
-       match /fideicomisos/{id} {
-         allow read, write: if request.auth != null;
-       }
-     }
-   }
-   ```
-4. **Project settings → General → Your apps → Web**: registrar la app y copiar el `firebaseConfig`.
-5. En `index.html`, buscar `const FB_CONFIG=null;` y sustituir el `null` por el objeto copiado.
-6. Redesplegar en Netlify. La app pedirá login; el registro queda en la nube.
-
-Notas: el `firebaseConfig` no es un secreto (la seguridad la dan las reglas + los usuarios), pero el
-repo debe seguir privado. El botón «Subirlos a la nube» migra lo que cada quien tenga en modo local.
-En el artifact de Claude la nube no carga (CSP) y la app cae a modo local automáticamente — el modo
-nube es para el despliegue en Netlify. Firestore gratuito (plan Spark) alcanza de sobra para esta base.
-
-## Uso masivo
-
-1. Descargar la plantilla desde la app (o `plantillas/plantilla_captura_fideicomisos.csv`).
-2. Llenar en Excel: **una fila por integrante**, agrupadas por `ID` de fideicomiso. La plantilla lista los valores válidos de cada columna.
-3. Importar el CSV en la app: agrupa por ID, califica todo y alimenta el registro.
-
-## Branding
-
-La interfaz y la cédula PDF usan la paleta BX+ real (carbón #2e383e + verde lima #a4c425 + teal #2fa3a0, tomados del sitio —
-ver `assets/README.md` para colocar el logo oficial y afinar colores con el manual de identidad).
-Crédito «Desarrollado por Lex Quo» en pie de cabecera.
-
-## ¿Dónde vive la base de variables?
-
-- **Fuente de verdad:** `data/base_variables_bx.csv` (2,673 variables: modelo de clientes BX+ completo + factores fiduciarios serie 9000, con pesos y marca de aplicabilidad).
-- **Catálogo operable de la app:** objeto `CAT` dentro de `index.html` (documentado en `docs/CATALOGOS.md`) — versión simplificada para captura manual.
-- **Maestro Excel:** `Matriz_Riesgo_Fideicomisos_LexQuo_v2.xlsx` (fuera del repo; hoja «3. BASE VARIABLES»).
-
-## Documentación
-
-| Doc | Contenido |
+| Archivo | Qué es |
 |---|---|
-| `docs/METODOLOGIA.md` | Motor de cálculo: factores, pesos, escala, consolidación por grupo de rol, invalidaciones |
-| `docs/CATALOGOS.md` | Catálogos y niveles 1–5 de cada variable |
-| `docs/REGLAS_TRATAMIENTO.md` | Base de reglas TR-xx de tratamiento y monitoreo |
-| `docs/ROADMAP.md` | Fase 2: Firebase, backend IA, catálogos completos |
-| `CHANGELOG.md` | Historial de versiones |
+| `index.html` | La página completa, con todo incluido |
+| `assets/logo.png` | Logotipo, se usa en la página y en los PDF |
+| `assets/hero.jpg` | Imagen principal |
+| `assets/equipo.jpg` | Imagen de la banda intermedia |
+| `assets/medida.jpg` | Imagen de capacitación a la medida |
+| `assets/asesor.jpg` | Imagen del bloque de contacto |
+| `.nojekyll` | Evita que GitHub Pages procese el sitio |
 
-## Contexto metodológico
+## Cómo actualizar
 
-Este instrumento es **distinto e independiente** de la MEBR/EBR de la entidad (requisito de la Guía CNBV 2019). Deriva de la Matriz de Riesgo de clientes BX+ 2026: reutiliza sus factores y escala, agrega los factores fiduciarios (serie FF/9000) y el rol como variable (FIR), y adapta la consolidación a la estructura multi-parte del fideicomiso.
+Se reemplazan los archivos por los de la nueva versión y se hace commit.
+Las imágenes se cambian subiendo otra con el mismo nombre.
+
+## Contacto
+
+360Educa · capacitacion@gmc360.com.mx · WhatsApp +52 55 4915 0005
+
+---
+
+Las instrucciones de configuración y la documentación comercial de este
+proyecto son internas y no viven en este repositorio.
