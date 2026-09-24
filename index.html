@@ -173,39 +173,40 @@ const CAT={
   ["Comercio exterior / pagos internacionales",4],
   ["Entidad auxiliar del crédito como parte del negocio (SOFOM/SOFIPO/arrendadora/aseguradora)",4],
   ["Desarrollo inmobiliario: construcción y venta (Fracc. V / V Bis)",5],
-  ["Manejo intensivo de efectivo",5]],
- actividad:[["Sin actividad de riesgo / asalariado",1],["Servicios profesionales",2],["Comercio general",2],["Institución de crédito (banco)",2],["Sector financiero regulado",3],["No capturada",3],["Inmobiliario / construcción",4],["Entidad auxiliar del crédito (SOFOM/SOFIPO/arrendadora/aseguradora)",4],["Comercio exterior",4],["Efectivo intensivo",5]],
+  ["Alto manejo de efectivo (casas de empeño, gasolineras, restaurantes, menudeo)",5]],
+ actividad:[["Sin actividad de riesgo / asalariado",1],["Servicios profesionales",2],["Comercio general",2],["Institución de crédito (banco)",2],["Sector financiero regulado",3],["No capturada",3],["Inmobiliario / construcción",4],["Entidad auxiliar del crédito (SOFOM/SOFIPO/arrendadora/aseguradora)",4],["Comercio exterior",4],["Alto manejo de efectivo (casas de empeño, gasolineras, restaurantes, menudeo)",5]],
  pais:[["México",1],["Norteamérica / Europa (bajo riesgo)",2],["Otro país",3],["Régimen fiscal preferente",4],["Lista GAFI gris",5],["Lista GAFI negra / sancionado",5]],
  estado:[["Baja incidencia delictiva",1],["Incidencia media",2],["Domicilio en el extranjero",3],["Alta incidencia delictiva",4],["Frontera / puerto",4]],
  edad:[["Más de 10 años",1],["3 a 10 años",2],["1 a 3 años",4],["Menos de 1 año",5]],
  edadPF:[["25 a 50 años",1],["51 a 65 años",2],["18 a 24 años",4],["Más de 65 años",4],["Menor de edad",4]],
- rol:[["Fideicomisario",3],["Apoderado / delegado",3],["Tercero / garante",2],["Fideicomitente",4],["Comité técnico",4],["Fideicomitente-Fideicomisario",5]],
- tipologia:[["Administración",2],["Garantía",2],["Testamentario",2],["Inversión",3],["Fuente de pago",3],["Público / gubernamental",4],["Zona restringida",4],["Traslativo de dominio",5]],
- patrimonio:[["Efectivo / valores bursátiles",1],["Inmuebles",3],["Mixto (efectivo y especie)",3],["Acciones / partes sociales",4],["Derechos de cobro / otros bienes",4]],
+ rol:[["Fideicomisario",3],["Apoderado / delegado",2],["Tercero administrador / garante / depositario",1],["Fideicomitente",4],["Comité técnico",4],["Fideicomitente-Fideicomisario",5]],
+ tipologia:[["Administración",2],["Garantía",2],["Testamentario / planeación patrimonial",2],["Inversión",3],["Fuente de pago",3],["Recibido por sustitución fiduciaria",4],["Zona restringida",4],["Traslativo de dominio",5]],
+ patrimonio:[["Efectivo (numerario) / valores bursátiles cotizados en custodia",1],["Inmuebles y bienes muebles (vehículos, arte, joyas, maquinaria)",3],["Mixto (efectivo en numerario + especie)",3],["Acciones, partes sociales y otros títulos no cotizados",4],["Derechos (de cobro, fideicomisarios, etc.) / otros bienes",4]],
  valor:[["Hasta 5 MDP",1],["5 a 20 MDP",2],["20 a 100 MDP",3],["100 a 500 MDP",4],["Más de 500 MDP",5]],
  antig:[["Más de 10 años",1],["3 a 10 años",2],["1 a 3 años",4],["Menos de 1 año",5]],
  av:[["Sin actividad vulnerable (Tipo A)",1],["En dictamen (Tipo C)",3],["AV confirmada Art. 17 (Tipo B)",5]],
- proc:[["Bancarizados con soporte",1],["Venta de activos documentada",2],["Aportación en especie sin avalúo",4],["Origen no verificable",5]],
+ proc:[["Bancarizados con soporte (ahorros, dividendos, salarios, etc.)",1],["Venta de activos documentada (inmuebles, acciones, etc.)",2],["Aportación en especie sin avalúo",4],["Origen no verificable",5]],
  usd:[["Sin USD ni parte extranjera",1],["USD ocasional / parte extranjera",3],["Flujos recurrentes o jurisdicción de riesgo",5]],
- desv:[["Sin desviación / no evaluable",1],["Operaciones atípicas vs. fin",4],["Operaciones fuera del objeto",5]]
+ ubic:[["No aplica — patrimonio sin ubicación física (efectivo, derechos)", 0], ["Bien en Aguascalientes", 2], ["Bien en Baja California", 5], ["Bien en Baja California Sur", 3], ["Bien en Campeche", 3], ["Bien en Coahuila", 3], ["Bien en Colima", 4], ["Bien en Chiapas", 4], ["Bien en Chihuahua", 5], ["Bien en Ciudad de México", 4], ["Bien en Durango", 4], ["Bien en Guanajuato", 4], ["Bien en Guerrero", 5], ["Bien en Hidalgo", 3], ["Bien en Jalisco", 5], ["Bien en Estado de México", 4], ["Bien en Michoacán", 5], ["Bien en Morelos", 3], ["Bien en Nayarit", 3], ["Bien en Nuevo León", 4], ["Bien en Oaxaca", 4], ["Bien en Puebla", 3], ["Bien en Querétaro", 2], ["Bien en Quintana Roo", 4], ["Bien en San Luis Potosí", 3], ["Bien en Sinaloa", 4], ["Bien en Sonora", 4], ["Bien en Tabasco", 4], ["Bien en Tamaulipas", 4], ["Bien en Tlaxcala", 2], ["Bien en Veracruz", 4], ["Bien en Yucatán", 3], ["Bien en Zacatecas", 4], ["Bien en el extranjero", 4]],
+ desv:[["Opera conforme al contrato / aún no evaluado",1],["Operaciones poco usuales para el fin del contrato",4],["Operaciones fuera del objeto del contrato",5]]
 };
 const W_FI={tipoPersona:15,actividad:23,paisNac:9,nacionalidad:11,paisDom:11,estadoDom:12,edad:7,rol:12};
-const W_FF={tipologia:18,patrimonio:12,valor:12,antig:8,partes:10,av:15,proc:10,usd:8,desv:7};
+const W_FF={tipologia:16,patrimonio:10,valor:11,antig:7,partes:9,av:14,proc:10,usd:6,desv:5,ubic:12}; // repeso Bloque A acordado 5-sep (Matriz v2.4/v2.5)
 const W_ROL={"Fideicomitente":.40,"Fideicomitente-Fideicomisario":.40,"Fideicomisario":.25,
-             "Comité técnico":.20,"Apoderado / delegado":.15,"Tercero / garante":.15};
+             "Comité técnico":.20,"Apoderado / delegado":.15,"Tercero administrador / garante / depositario":.15};
 const TRAZA={tipologia:["V1","Campo poblado en sistema"],patrimonio:["V1","Cartera con cláusula de patrimonio"],
  valor:["V1","Reporte mensual de valor"],antig:["V1","Fecha de constitución"],partes:["AUTO","Se deriva del conteo"],
  av:["V1*","Inventario del diagnóstico (Tipo A/B/C)"],proc:["V2","F8: no existe campo en sistema"],
- usd:["V1*","Cuestionario de operatividad / reporte"],desv:["V2","No hay campo de fin/objeto"],
+ usd:["V1*","Cuestionario de operatividad / reporte"],desv:["V2","No hay campo de fin/objeto"],ubic:["V1*","Ubicación del bien (tabla F7 del banco)"],
  rol:["V1","KYC: tipo de cliente"],tipoPersona:["V1","Campo poblado"],
  actividad:["V2","Campo existe pero NO poblado — prioridad 1"],paisNac:["V1*","Proxy"],
  nacionalidad:["V1*","Proxy por país de nacimiento"],paisDom:["V1","Campo poblado"],
  estadoDom:["V1","Campo poblado"],edad:["V1","Fecha de constitución/nacimiento"]};
 const tag=k=>{const t=TRAZA[k];return t?`<span class="tag t-${t[0].replace("*","x")}" title="${esc(t[1])}">${t[0]}</span>`:""};
-const FF_DEF=[["tipologia","Tipología del fideicomiso","tipologia"],["patrimonio","Patrimonio aportado","patrimonio"],
+const FF_DEF=[["tipologia","Tipo de fideicomiso","tipologia"],["patrimonio","Patrimonio aportado","patrimonio"],
  ["valor","Valor del patrimonio","valor"],["antig","Antigüedad del fideicomiso","antig"],
  ["av","Actividad vulnerable (LFPIORPI)","av"],["proc","Procedencia de los recursos","proc"],
- ["usd","Operaciones en USD / transfronterizas","usd"],["desv","Desviación del fin del contrato","desv"]];
+ ["usd","Operaciones en USD / transfronterizas","usd"],["desv","Operación distinta al fin del contrato","desv"],["ubic","Ubicación del patrimonio","ubic"]];
 const FI_DEF=[["rol","Rol","rol"],["tipoPersona","Tipo persona","tipoPersona"],["actividad","Actividad","actividad"],
  ["paisNac","País nac.","pais"],["nacionalidad","Nacionalidad","pais"],["paisDom","País dom.","pais"],
  ["estadoDom","Estado dom.","estado"],["edad","Edad / antig.","edad"]];
@@ -216,7 +217,11 @@ function esPF(p){const v=normTP(p.tipoPersona);return v==="Persona física"||v.i
 function catEdad(p){return esPF(p)?"edadPF":"edad";}
 function effInt(p){const s=scoreInt(p);if(p.lista)return 500;
   if(p.pep||p.bc||esAux(p.actividad))return Math.max(s,291);return s;}
-function lvl(cat,val){const f=CAT[cat].find(x=>x[0]===val);return f?f[1]:1;}
+const LEG={"Testamentario": "Testamentario / planeación patrimonial", "Público / gubernamental": "Recibido por sustitución fiduciaria", "Efectivo / valores bursátiles": "Efectivo (numerario) / valores bursátiles cotizados en custodia", "Inmuebles": "Inmuebles y bienes muebles (vehículos, arte, joyas, maquinaria)", "Mixto (efectivo y especie)": "Mixto (efectivo en numerario + especie)", "Acciones / partes sociales": "Acciones, partes sociales y otros títulos no cotizados", "Derechos de cobro / otros bienes": "Derechos (de cobro, fideicomisarios, etc.) / otros bienes", "Bancarizados con soporte": "Bancarizados con soporte (ahorros, dividendos, salarios, etc.)", "Venta de activos documentada": "Venta de activos documentada (inmuebles, acciones, etc.)", "Sin desviación / no evaluable": "Opera conforme al contrato / aún no evaluado", "Operaciones atípicas vs. fin": "Operaciones poco usuales para el fin del contrato", "Operaciones fuera del objeto": "Operaciones fuera del objeto del contrato", "Efectivo intensivo": "Alto manejo de efectivo (casas de empeño, gasolineras, restaurantes, menudeo)", "Manejo intensivo de efectivo": "Alto manejo de efectivo (casas de empeño, gasolineras, restaurantes, menudeo)", "Tercero / garante": "Tercero administrador / garante / depositario", "Sin desviacion / no evaluable": "Opera conforme al contrato / aún no evaluado"};
+function migraFid(f){if(!f)return f;if(!f.ubic)f.ubic="No aplica — patrimonio sin ubicación física (efectivo, derechos)";["tipologia","patrimonio","proc","desv","actividadFid"].forEach(k=>{if(LEG[f[k]])f[k]=LEG[f[k]]});
+  (f.integrantes||[]).forEach(p=>{["rol","actividad"].forEach(k=>{if(LEG[p[k]])p[k]=LEG[p[k]]})});return f;}
+function migraReg(r){if(r&&r.fid)migraFid(r.fid);return r;}
+function lvl(cat,val){if(LEG[val])val=LEG[val];const f=CAT[cat].find(x=>x[0]===val);return f?f[1]:(cat==="ubic"?0:1);}
 function banda(s){return s>=291?"ALTO":s>=259?"MEDIO ALTO":s>=224?"MEDIO":"BAJO";}
 function cls(b){return "b-"+b.replace(/\s/g,"");}
 function proxRev(b,fecha){const M={"PROHIBITIVO":6,"ALTO":6,"MEDIO ALTO":12,"MEDIO":24,"BAJO":36}[b]||12;
@@ -253,7 +258,7 @@ async function initNube(){
       if(UNSUB){UNSUB();UNSUB=null;}
       if(USER){MODO="nube";NUBE_MSG="";
         UNSUB=DB.collection("fideicomisos").orderBy("fecha","desc").onSnapshot(snap=>{
-          REG=snap.docs.map(d=>{const x=d.data();x.key=d.id;return x;});render();},
+          REG=snap.docs.map(d=>{const x=d.data();x.key=d.id;return migraReg(x);});render();},
           err=>{NUBE_MSG="Sin acceso a la base: revise las reglas de Firestore.";render();});}
       else{MODO="login";}
       render();});
@@ -283,22 +288,26 @@ async function migraLocal(){
   toast(a.length+" fideicomisos locales subidos a la nube.");render();
 }
 const LS="lexquo.fid.registro.v1";
-let REG=[];try{const r=localStorage.getItem(LS);if(r)REG=JSON.parse(r)||[]}catch(e){REG=[]}
+let REG=[];try{const r=localStorage.getItem(LS);if(r)REG=(JSON.parse(r)||[]).map(migraReg)}catch(e){REG=[]}
 function persiste(){if(MODO==="nube")return;try{localStorage.setItem(LS,JSON.stringify(REG))}catch(e){}}
 let F=nuevoFid(),EDIT=-1;
-function nuevoFid(){return{id:"",nombre:"",actividadFid:"No capturada",tipologia:"Administración",patrimonio:"Efectivo / valores bursátiles",
+function nuevoFid(){return{id:"",nombre:"",actividadFid:"No capturada",tipologia:"Administración",patrimonio:"Efectivo (numerario) / valores bursátiles cotizados en custodia",
   valor:"Hasta 5 MDP",antig:"Más de 10 años",av:"Sin actividad vulnerable (Tipo A)",
-  proc:"Bancarizados con soporte",usd:"Sin USD ni parte extranjera",desv:"Sin desviación / no evaluable",
+  proc:"Bancarizados con soporte (ahorros, dividendos, salarios, etc.)",usd:"Sin USD ni parte extranjera",desv:"Opera conforme al contrato / aún no evaluado",
+  ubic:"No aplica — patrimonio sin ubicación física (efectivo, derechos)",
   integrantes:[nuevoInt("Fideicomitente"),nuevoInt("Fideicomisario")]};}
 function nuevoInt(rol){return{nombre:"",rol:rol||"Fideicomisario",tipoPersona:"Persona física",
   actividad:"No capturada",paisNac:"México",nacionalidad:"México",paisDom:"México",
-  estadoDom:"Baja incidencia delictiva",edad:"25 a 50 años",pep:false,lista:false,bc:false};}
+  estadoDom:"Baja incidencia delictiva",edad:"25 a 50 años",pep:false,lista:false,bc:false,clienteBanco:false,puntajeBanco:""};}
 
 // ---------- Cálculo ----------
-function scoreInt(p){let s=0;for(const k in W_FI){const cat=k==="edad"?catEdad(p):((k==="paisNac"||k==="nacionalidad"||k==="paisDom")?"pais":(k==="estadoDom"?"estado":k));const v=k==="tipoPersona"?normTP(p[k]):p[k];s+=lvl(cat,v)*W_FI[k];}return Math.round(s);}
-function scoreEstr(f){let s=0;
-  for(const[k,,cat]of FF_DEF)s+=lvl(cat,f[k])*W_FF[k];
-  s+=partesLvl(f.integrantes.length)*W_FF.partes;return Math.round(s);}
+function heredado(p){const pb=+p.puntajeBanco;return !!p.clienteBanco&&pb>=100&&pb<=500;}
+function scoreHer(p){const pb=+p.puntajeBanco;if(p.refCIFRE)return Math.round(pb);return Math.round(Math.max(pb,(pb/100)*80+lvl("rol",p.rol)*20));}
+function scoreInt(p){if(heredado(p))return scoreHer(p);let s=0;for(const k in W_FI){const cat=k==="edad"?catEdad(p):((k==="paisNac"||k==="nacionalidad"||k==="paisDom")?"pais":(k==="estadoDom"?"estado":k));const v=k==="tipoPersona"?normTP(p[k]):p[k];s+=lvl(cat,v)*W_FI[k];}return Math.round(s);}
+function scoreEstr(f){let s=0,w=0;
+  for(const[k,,cat]of FF_DEF){const l=lvl(cat,f[k]);if(k==="ubic"&&!l)continue;s+=l*W_FF[k];w+=W_FF[k];}
+  s+=partesLvl((f.integrantes||[]).length)*W_FF.partes;w+=W_FF.partes;
+  return Math.round(s*100/w);} // si la ubicación no aplica, se reparte su peso (renormaliza a 100)
 function calcula(f){
   const ints=f.integrantes.map(p=>({...p,score:effInt(p)}));
   const estr=scoreEstr(f);
@@ -381,11 +390,11 @@ const REGLAS=[
  ["TR-19",2,(f)=>f.antig==="Menos de 1 ano"||f.antig==="Menos de 1 año","Validar el patrimonio inicial",
   "Fideicomiso de reciente constitucion: validar el origen del patrimonio aportado en la constitucion.",
   "Estructuras de reciente creacion"],
- ["TR-20",1,(f)=>f.desv!=="Sin desviacion / no evaluable"&&f.desv!=="Sin desviación / no evaluable",
+ ["TR-20",1,(f)=>f.desv!=="Opera conforme al contrato / aún no evaluado",
   "Operaciones fuera del fin del contrato",
   "Revisar las operaciones contra el objeto del fideicomiso y evaluar el reporte de operacion inusual.",
   "Disp. 17 DCG · Monitoreo"],
- ["TR-21",2,(f,R)=>R.ints.some(p=>p.actividad==="Efectivo intensivo"),"Partes con giro intensivo en efectivo",
+ ["TR-21",2,(f,R)=>R.ints.some(p=>p.actividad==="Alto manejo de efectivo (casas de empeño, gasolineras, restaurantes, menudeo)"),"Partes con giro intensivo en efectivo",
   "Reforzar el analisis de origen de recursos de las partes con giro intensivo en efectivo.",
   "ENR · Giros de alto riesgo"],
  ["TR-22",1,(f,R)=>R.ints.some(p=>esAux(p.actividad))||esAux(f.actividadFid),"Entidad auxiliar del credito - politica interna",
@@ -394,7 +403,7 @@ const REGLAS=[
  ["TR-23",2,(f)=>{const it=CAT.actFid.find(a=>a[0]===f.actividadFid);return !!it&&it[1]>=4&&!esAux(f.actividadFid);},"Giro de riesgo del fideicomiso",
   "El objeto del fideicomiso corresponde a un sector de alta vulnerabilidad: monitoreo reforzado de las operaciones del vehiculo y soporte documental de cada evento patrimonial.",
   "Anexo 3 DCG · ENR 2023"],
- ["TR-24",1,(f)=>f.tipologia==="Traslativo de dominio"&&f.proc!=="Bancarizados con soporte"&&f.proc!=="Venta de activos documentada",
+ ["TR-24",1,(f)=>f.tipologia==="Traslativo de dominio"&&f.proc!=="Bancarizados con soporte (ahorros, dividendos, salarios, etc.)"&&f.proc!=="Venta de activos documentada (inmuebles, acciones, etc.)",
   "Transmision de dominio sin origen trazable",
   "Tipologia de lavado inmobiliario: aportacion de inmuebles a fideicomiso traslativo sin financiamiento regulado ni origen documentado. No formalizar la transmision hasta acreditar el origen de los recursos y el avaluo del bien.",
   "Tipologia UIF/GAFI: transferencias inmobiliarias no financiadas"],
@@ -491,7 +500,7 @@ function pdfCedula(){
   y=PH-96;
   // identificacion
   T(M,y,(F.id||"Sin ID")+"  "+(F.nombre||"Fideicomiso sin nombre"),13,true,AZ);y-=15;
-  T(M,y,"Tipologia: "+F.tipologia+"   |   Patrimonio: "+F.patrimonio+"   |   Valor: "+F.valor,8.5,false,GR);y-=11;
+  T(M,y,"Tipo de fideicomiso: "+F.tipologia+"   |   Patrimonio: "+F.patrimonio+"   |   Valor: "+F.valor,8.5,false,GR);y-=11;
   T(M,y,"Actividad vulnerable: "+F.av+"   |   Integrantes: "+R.ints.length,8.5,false,GR);y-=18;
   // caja de resultado
   box(M,y-56,PW-2*M,56,AZ);
@@ -633,6 +642,7 @@ function render(){
       use <b>Exportar CSV</b> o <b>Respaldar</b>. Quien abra la app la encuentra en blanco.</div>`}
       <div class="card">
         <h2>Datos del fideicomiso</h2>
+        ${F.precarga?`<div class="hint" style="border-left:3px solid var(--sem-3);padding-left:8px"><b>Precarga CIFRE — pendiente de captura.</b> Este registro viene de la base de calificación del banco (cuentas en CIFRE: ${esc((F.cifre&&F.cifre.cuentas)||"")} · banda CIFRE ${esc((F.cifre&&F.cifre.banda)||"")} · puntaje ${esc((F.cifre&&F.cifre.puntaje)||"")}${F.cifre&&F.cifre.listas?` · campo listas: ${esc(F.cifre.listas)} (por confirmar)`:""}). Los datos del vehículo y de los integrantes están por capturar; mientras tanto la calificación refleja el puntaje del banco.</div>`:""}
         <div class="hint">El número de partes se calcula solo: ${F.integrantes.length} integrantes → nivel ${partesLvl(F.integrantes.length)}.</div>
         <div class="legend"><span><b>Trazabilidad:</b></span>
           <span><span class="tag t-V1">V1</span> dato en sistema</span>
@@ -662,6 +672,9 @@ function render(){
               <label><input type="checkbox" data-i="${i}" data-k="pep" ${p.pep?"checked":""}>PEP</label>
               <label><input type="checkbox" data-i="${i}" data-k="lista" ${p.lista?"checked":""}>Listas</label>
               <label><input type="checkbox" data-i="${i}" data-k="bc" ${p.bc?"checked":""}>BC s/ident.</label>
+              <label title="Ruta heredada: MAX(puntaje banco ; nivel banco×80 + nivel rol×20)"><input type="checkbox" data-i="${i}" data-k="clienteBanco" ${p.clienteBanco?"checked":""}>Cliente banco</label>
+              ${p.clienteBanco?`<input type="number" min="100" max="500" data-i="${i}" data-k="puntajeBanco" value="${esc(p.puntajeBanco)}" placeholder="Puntaje CIFRE" style="width:96px" title="Puntaje del cliente en CIFRE (100–500)">`:""}
+              ${heredado(p)?`<span class="tag t-AUTO" title="${p.refCIFRE?"Puntaje CIFRE del cliente fiduciario, sin ajuste por rol (precarga)":"Se hereda el puntaje del banco ajustado por rol; los demás factores del integrante no ponderan"}">${p.refCIFRE?"CIFRE":"HEREDADO"}</span>`:""}
             </div></td>
             <td style="white-space:nowrap"><b style="font-variant-numeric:tabular-nums">${sc}</b>
               <span class="chip ${cls(b)}" style="margin-left:5px">${b}</span></td>
@@ -748,7 +761,7 @@ function render(){
         <div class="filerow">
           <button id="plantilla">Descargar plantilla CSV</button>
           ${location.protocol.indexOf("http")===0?`<a class="btnlink" href="plantillas/Layout_Carga_Fideicomisos_BX.xlsx" download>Layout de carga (Excel)</a>
-          <a class="btnlink" href="plantillas/Matriz_Riesgo_Fideicomisos_LexQuo_v2.2.xlsx" download>Matriz del modelo (Excel)</a>`:""}
+          <a class="btnlink" href="plantillas/Matriz_Riesgo_Fideicomisos_LexQuo_v2.5.xlsx" download>Matriz del modelo (Excel)</a>`:""}
           <input type="file" id="imp" accept=".csv,text/csv" title="Importar captura masiva CSV">
           <span style="font-size:11px;color:var(--ink-3)">Captura masiva: una fila por integrante, agrupa por ID.</span>
         </div>
@@ -798,6 +811,7 @@ function bind(){
     else if(el.tagName==="SELECT")el.onchange=e=>{const P=F.integrantes[i];P[k]=e.target.value;
       if(k==="tipoPersona"&&!CAT[catEdad(P)].some(x=>x[0]===P.edad))P.edad=esPF(P)?"25 a 50 años":"Más de 10 años";
       render()};
+    else if(k==="puntajeBanco")el.onchange=e=>{F.integrantes[i][k]=e.target.value;render()};
     else el.oninput=e=>{F.integrantes[i][k]=e.target.value};
   });
   document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{
@@ -807,7 +821,7 @@ function bind(){
     if(MODO==="nube"){if(REG[i]&&REG[i].key)nubeDelete(REG[i].key);if(EDIT===i)EDIT=-1;return;}
     REG.splice(i,1);if(EDIT===i)EDIT=-1;else if(EDIT>i)EDIT--;guarda()});
   document.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{
-    const i=+b.dataset.open;EDIT=i;F=JSON.parse(JSON.stringify(REG[i].fid));render();
+    const i=+b.dataset.open;EDIT=i;F=migraFid(JSON.parse(JSON.stringify(REG[i].fid)));render();
     window.scrollTo({top:0,behavior:"smooth"});});
   document.getElementById("add").onclick=()=>{F.integrantes.push(nuevoInt());render()};
   document.getElementById("bulk").onclick=()=>{
@@ -856,7 +870,7 @@ function bind(){
     const rd=new FileReader();
     rd.onload=()=>{try{
       const arr=JSON.parse(String(rd.result));
-      if(!Array.isArray(arr))throw 0;
+      if(!Array.isArray(arr))throw 0;arr.forEach(migraReg);
       let nu=0,up=0;
       if(MODO==="nube"){arr.forEach(r=>{if(r&&r.fid){r.key=regKey(r);nubeSave(r);nu++}});
         toast("Respaldo enviado a la nube: "+nu+" fideicomisos.");}
@@ -875,7 +889,7 @@ const COLS=["ID","Fideicomiso","Tipologia","Patrimonio","Valor","AntiguedadFid",
  "Procedencia","USD","Desviacion","ActividadFideicomiso","NombreParte","Rol","TipoPersona","ActividadEconomica",
  "PaisNacimiento","Nacionalidad","PaisDomicilio","EstadoDomicilio","AntiguedadParte","PEP","Listas","BCsinIdentificar"];
 const MAPF={Tipologia:"tipologia",Patrimonio:"patrimonio",Valor:"valor",AntiguedadFid:"antig",
- ActividadVulnerable:"av",Procedencia:"proc",USD:"usd",Desviacion:"desv"};
+ ActividadVulnerable:"av",Procedencia:"proc",USD:"usd",Desviacion:"desv",UbicacionPatrimonio:"ubic"};
 const MAPI={Rol:"rol",TipoPersona:"tipoPersona",ActividadEconomica:"actividad",PaisNacimiento:"paisNac",
  Nacionalidad:"nacionalidad",PaisDomicilio:"paisDom",EstadoDomicilio:"estadoDom",AntiguedadParte:"edad"};
 function csvLine(a){return a.map(v=>'"'+String(v==null?"":v).replace(/"/g,'""')+'"').join(",")}
@@ -906,7 +920,7 @@ function parseCSV(t){
   if(f||row.length){row.push(f);rows.push(row)}
   return rows.filter(r=>r.some(x=>x.trim()!==""));
 }
-function valida(cat,v,def){const ok=CAT[cat].some(x=>x[0]===v);return ok?v:def}
+function valida(cat,v,def){if(LEG[v])v=LEG[v];const ok=CAT[cat].some(x=>x[0]===v);return ok?v:def}
 function importaCSV(e){
   const file=e.target.files&&e.target.files[0];if(!file)return;
   const rd=new FileReader();
@@ -923,8 +937,11 @@ function importaCSV(e){
         if(!id||id.indexOf(":")>-1)continue;
         if(!porId[id]){
           const f=nuevoFid();f.integrantes=[];f.id=id;f.nombre=(row[idx.Fideicomiso]||"").trim();
-          for(const col in MAPF){const k=MAPF[col];const cat=FF_DEF.find(x=>x[0]===k)[2];
+          for(const col in MAPF){if(idx[col]===undefined)continue;const k=MAPF[col];const cat=FF_DEF.find(x=>x[0]===k)[2];
             f[k]=valida(cat,(row[idx[col]]||"").trim(),f[k]);}
+          const gv=c=>idx[c]===undefined?"":(row[idx[c]]||"").trim();
+          if(/^(s[ií]|x|1|true)$/i.test(gv("Precarga"))){f.precarga=true;
+            f.cifre={cuentas:gv("CuentasCIFRE"),banda:gv("BandaCIFRE"),puntaje:gv("PuntajeBanco"),listas:gv("ListasCIFRE"),fecha:gv("FechaCIFRE")};}
           if(idx.ActividadFideicomiso!==undefined)f.actividadFid=valida("actFid",(row[idx.ActividadFideicomiso]||"").trim(),f.actividadFid);
           porId[id]=f;
         }
@@ -936,20 +953,37 @@ function importaCSV(e){
           p[k]=valida(cat,v,p[k]);}
         const si=v=>/^(s[ií]|si|x|1|true)$/i.test(String(v||"").trim());
         p.pep=si(row[idx.PEP]);p.lista=si(row[idx.Listas]);p.bc=si(row[idx.BCsinIdentificar]);
+        if(idx.ClienteBanco!==undefined){p.clienteBanco=si(row[idx.ClienteBanco]);p.puntajeBanco=(row[idx.PuntajeBanco]||"").trim();
+          if(porId[id].precarga){p.refCIFRE=true;}}
         porId[id].integrantes.push(p);n++;
       }
       const ids=Object.keys(porId);
       if(!ids.length){toast("No se encontraron filas con datos.");return}
+      const hoy=new Date().toISOString().slice(0,10);const nuevos=[];
       ids.forEach(id=>{const f=porId[id];const R=calcula(f);
-        REG.push({id:f.id,nombre:f.nombre,nPartes:f.integrantes.length,estr:R.estr,pond:R.pond,
-          peor:R.peor,final:R.final,banda:R.banda,fid:f});});
-      guarda(ids.length+" fideicomisos cargados ("+n+" integrantes).");
+        const reg={id:f.id,nombre:f.nombre,nPartes:f.integrantes.length,estr:R.estr,pond:R.pond,
+          peor:R.peor,final:R.final,banda:R.banda,fecha:hoy,fid:f};
+        if(f.precarga){reg.precarga=true;reg.cifre=f.cifre||null;}
+        nuevos.push(reg);});
+      if(MODO==="nube"){cargaNube(nuevos,n);}
+      else{nuevos.forEach(r=>{const i=REG.findIndex(x=>x.id&&x.id===r.id);if(i>=0)REG[i]=r;else REG.push(r);});
+        guarda(ids.length+" fideicomisos cargados ("+n+" integrantes).");}
     }catch(err){toast("No se pudo leer el archivo. Use la plantilla como base.")}
     e.target.value="";
   };
   rd.readAsText(file,"utf-8");
 }
 
+async function cargaNube(arr,n){
+  toast("Subiendo "+arr.length+" fideicomisos a la nube…");
+  try{for(let i=0;i<arr.length;i+=400){const b=DB.batch();
+      arr.slice(i,i+400).forEach(r=>{r.key=regKey(r);
+        const hist={fecha:r.fecha,final:r.final,banda:r.banda,por:USER?USER.email:"",origen:r.precarga?"precarga CIFRE":"carga CSV"};
+        b.set(DB.collection("fideicomisos").doc(r.key),Object.assign({},r,{historial:firebase.firestore.FieldValue.arrayUnion(hist)}),{merge:true});});
+      await b.commit();}
+    toast(arr.length+" fideicomisos cargados en la nube ("+n+" integrantes).");}
+  catch(e){toast("No se pudo completar la carga en la nube: "+(e&&e.code?e.code:"error")+".");}
+}
 async function descarga(filename,data,mime){
   if(typeof claude!=="undefined"&&claude&&claude.use){
     const d=await claude.use("downloads");
@@ -979,8 +1013,9 @@ function docHTMLNoUsado(){
 }
 function guarda(msg){persiste();render();if(msg)toast(msg);}
 async function exportCSV(){
-  const hd=["ID","Fideicomiso","Partes","Estructural","Ponderado","PeorParte","Final","Banda","Actualizado","ProximaRevision"];
-  const rows=REG.map(x=>[x.id,x.nombre,x.nPartes,x.estr,x.pond,x.peor,x.final,x.banda,x.fecha||"",proxRev(x.banda,x.fecha||null)]
+  const hd=["ID","Fideicomiso","Partes","Estructural","Ponderado","PeorParte","Final","Banda","Actualizado","ProximaRevision","Precarga","PuntajeCIFRE","BandaCIFRE","ListasCIFRE"];
+  const rows=REG.map(x=>[x.id,x.nombre,x.nPartes,x.estr,x.pond,x.peor,x.final,x.banda,x.fecha||"",proxRev(x.banda,x.fecha||null),
+    (x.precarga||(x.fid&&x.fid.precarga))?"SI":"",...(c=>[c?c.puntaje:"",c?c.banda:"",c?c.listas:""])(x.cifre||(x.fid&&x.fid.cifre))]
     .map(v=>'"'+String(v==null?"":v).replace(/"/g,'""')+'"').join(","));
   await descarga("registro_fideicomisos.csv","\ufeff"+[hd.join(",")].concat(rows).join("\r\n"),"text/csv");
 }

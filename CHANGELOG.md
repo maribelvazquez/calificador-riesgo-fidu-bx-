@@ -1,5 +1,29 @@
 # Changelog
 
+## v1.9 — 2026-09-24 (modelo acordado el 4 y 5 de septiembre + precarga de la base CIFRE)
+- Repeso del Bloque A (Matriz v2.4/v2.5): tipo 16 · patrimonio 10 · valor 11 · antigüedad 7 · partes 9 · actividad vulnerable 14 · procedencia 10 · USD 6 · operación distinta al fin 5 · ubicación del patrimonio 12 = 100.
+- Nuevo factor FF10 «Ubicación del patrimonio»: se captura el estado por nombre y toma su nivel de la tabla F7 del banco; bien en el extranjero = 4. Si el patrimonio no tiene ubicación física (efectivo, derechos) el factor no aplica y su peso se reparte entre los demás (renormaliza a 100).
+- Ruta heredada del Bloque B: casilla «Cliente banco» y puntaje CIFRE por integrante. Puntaje del integrante = MAX(puntaje banco ; nivel banco × 80 + nivel rol × 20), con nivel banco = puntaje ÷ 100. El piso impide que el rol baje el juicio del banco. Las invalidaciones (listas, PEP, BC, auxiliares) siguen aplicando encima.
+- Carga masiva: columnas opcionales UbicacionPatrimonio, ClienteBanco, PuntajeBanco y, para precarga, Precarga, CuentasCIFRE, BandaCIFRE, ListasCIFRE, FechaCIFRE. Los registros de precarga muestran el aviso «Precarga CIFRE — pendiente de captura» y toman el puntaje CIFRE sin ajuste por rol.
+- Corrección: la carga masiva en modo nube ahora sí guarda en Firestore (en lotes de 400) y fecha cada registro; antes sólo quedaba en pantalla.
+- Export CSV del registro con columnas de precarga (puntaje y banda CIFRE, campo listas).
+- Registros guardados antes de v1.9 se leen con «No aplica» en ubicación: su puntaje estructural cambia por el repeso al reabrirlos y guardarlos.
+- Pendiente: captura de países de integrantes por nombre (tabla F4/F5 del banco).
+
+## v1.8 — 2026-09-24 (comentarios de BX+ · lenguaje más básico)
+- Catálogos en lenguaje llano, conforme a las observaciones de Héctor Camacho (23-sep) y a la Matriz v2.5:
+  - Tipo de fideicomiso: «Testamentario / planeación patrimonial»; «Público / gubernamental» se sustituye por «Recibido por sustitución fiduciaria» (nivel 4; los públicos no son alcance de Fiduciario).
+  - Patrimonio: efectivo en numerario / valores bursátiles cotizados en custodia (1) · inmuebles y bienes muebles (3) · mixto (3) · acciones, partes sociales y otros títulos no cotizados (4) · derechos de cobro, fideicomisarios y otros bienes (4).
+  - Procedencia: ejemplos en recursos bancarizados y en venta de activos.
+  - FF9 se muestra como «Operación distinta al fin del contrato» con opciones en lenguaje llano (mismos niveles; sigue siendo V2).
+  - «Efectivo intensivo» pasa a «Alto manejo de efectivo (casas de empeño, gasolineras, restaurantes, menudeo)» en la actividad de integrantes y del fideicomiso. TR-21 intacta.
+  - Rol «Tercero / garante» pasa a «Tercero administrador / garante / depositario».
+- «Tipología del fideicomiso» se renombra «Tipo de fideicomiso» (acuerdo 4-sep: en PLD/FT «tipología» designa un patrón de lavado).
+- Catálogo de rol reanclado a piso 1 (acuerdo 5-sep, ya en la Matriz v2.4): tercero 1 · apoderado 2 · fideicomisario 3 · comité técnico 4 · fideicomitente 4 · doble rol 5.
+- Migración automática: los registros guardados con los nombres anteriores (nube, local, respaldo JSON y CSV) se leen y se muestran con los nombres nuevos; no se pierde ningún dato. El puntaje guardado de un registro se actualiza al reabrirlo y guardarlo.
+- Descarga de la Matriz del modelo actualizada a v2.5. Layout de carga y plantilla CSV con los catálogos nuevos.
+- Pendiente para v1.9 (acordado el 4/5-sep, aún no en la app): repeso del Bloque A con FF10 ubicación del patrimonio, ruta heredada 80/20 del puntaje del banco, captura de países y estados por nombre.
+
 ## v1.7.3 — 2026-09-03
 - Botones de descarga del Layout de carga y de la Matriz del modelo (Excel) junto al importador de CSV — siempre bajan la versión vigente del sitio; solo visibles cuando la app corre publicada.
 

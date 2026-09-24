@@ -24,7 +24,7 @@ Niveles 1–5 por variable. Fuente: catálogo simplificado operable derivado de 
 | No capturada | 3 |
 | Inmobiliario / construcción | 4 |
 | Comercio exterior | 4 |
-| Efectivo intensivo | 5 |
+| Alto manejo de efectivo (casas de empeño, gasolineras, restaurantes, menudeo) | 5 |
 
 ## País (F4/F5/F6 — nacimiento, nacionalidad, domicilio)
 
@@ -61,8 +61,8 @@ Niveles 1–5 por variable. Fuente: catálogo simplificado operable derivado de 
 | Variable | Nivel |
 |---|---|
 | Fideicomisario | 3 |
-| Apoderado / delegado | 3 |
-| Tercero / garante | 2 |
+| Apoderado / delegado | 2 |
+| Tercero administrador / garante / depositario | 1 |
 | Fideicomitente | 4 |
 | Comité técnico | 4 |
 | Fideicomitente-Fideicomisario | 5 |
@@ -73,10 +73,10 @@ Niveles 1–5 por variable. Fuente: catálogo simplificado operable derivado de 
 |---|---|
 | Administración | 2 |
 | Garantía | 2 |
-| Testamentario | 2 |
+| Testamentario / planeación patrimonial | 2 |
 | Inversión | 3 |
 | Fuente de pago | 3 |
-| Público / gubernamental | 4 |
+| Recibido por sustitución fiduciaria | 4 |
 | Zona restringida | 4 |
 | Traslativo de dominio | 5 |
 
@@ -84,11 +84,11 @@ Niveles 1–5 por variable. Fuente: catálogo simplificado operable derivado de 
 
 | Variable | Nivel |
 |---|---|
-| Efectivo / valores bursátiles | 1 |
-| Inmuebles | 3 |
-| Mixto (efectivo y especie) | 3 |
-| Acciones / partes sociales | 4 |
-| Derechos de cobro / otros bienes | 4 |
+| Efectivo (numerario) / valores bursátiles cotizados en custodia | 1 |
+| Inmuebles y bienes muebles (vehículos, arte, joyas, maquinaria) | 3 |
+| Mixto (efectivo en numerario + especie) | 3 |
+| Acciones, partes sociales y otros títulos no cotizados | 4 |
+| Derechos (de cobro, fideicomisarios, etc.) / otros bienes | 4 |
 
 ## Valor del patrimonio (FF3)
 
@@ -121,8 +121,8 @@ Niveles 1–5 por variable. Fuente: catálogo simplificado operable derivado de 
 
 | Variable | Nivel |
 |---|---|
-| Bancarizados con soporte | 1 |
-| Venta de activos documentada | 2 |
+| Bancarizados con soporte (ahorros, dividendos, salarios, etc.) | 1 |
+| Venta de activos documentada (inmuebles, acciones, etc.) | 2 |
 | Aportación en especie sin avalúo | 4 |
 | Origen no verificable | 5 |
 
@@ -138,7 +138,7 @@ Niveles 1–5 por variable. Fuente: catálogo simplificado operable derivado de 
 
 | Variable | Nivel |
 |---|---|
-| Sin desviación / no evaluable | 1 |
-| Operaciones atípicas vs. fin | 4 |
-| Operaciones fuera del objeto | 5 |
+| Opera conforme al contrato / aún no evaluado | 1 |
+| Operaciones poco usuales para el fin del contrato | 4 |
+| Operaciones fuera del objeto del contrato | 5 |
 
