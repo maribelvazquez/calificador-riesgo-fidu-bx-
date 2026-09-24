@@ -5,7 +5,10 @@
 - Nuevo factor FF10 «Ubicación del patrimonio»: se captura el estado por nombre y toma su nivel de la tabla F7 del banco; bien en el extranjero = 4. Si el patrimonio no tiene ubicación física (efectivo, derechos) el factor no aplica y su peso se reparte entre los demás (renormaliza a 100).
 - Ruta heredada del Bloque B: casilla «Cliente banco» y puntaje CIFRE por integrante. Puntaje del integrante = MAX(puntaje banco ; nivel banco × 80 + nivel rol × 20), con nivel banco = puntaje ÷ 100. El piso impide que el rol baje el juicio del banco. Las invalidaciones (listas, PEP, BC, auxiliares) siguen aplicando encima.
 - Carga masiva: columnas opcionales UbicacionPatrimonio, ClienteBanco, PuntajeBanco y, para precarga, Precarga, CuentasCIFRE, BandaCIFRE, ListasCIFRE, FechaCIFRE. Los registros de precarga muestran el aviso «Precarga CIFRE — pendiente de captura» y toman el puntaje CIFRE sin ajuste por rol.
+- Opción «No determinado» en todos los factores del vehículo (y número de partes en precarga) con nivel 2.58 = límite superior de MEDIO (puntaje 258): sin información no se presume riesgo bajo; un fideicomiso sin datos queda en MEDIO documentado (criterio de acotamiento), no en BAJO por omisión ni en ALTO por falta de dato. No dispara TR-20.
+- Cobertura de datos: % por fideicomiso en la captura y tablero «Cobertura de datos» en el registro (vehículos completos vs. con faltantes, precarga, datos faltantes más frecuentes por factor, integrantes con actividad no capturada y calificados por puntaje del banco).
 - Corrección: la carga masiva en modo nube ahora sí guarda en Firestore (en lotes de 400) y fecha cada registro; antes sólo quedaba en pantalla.
+- Botón «Quitar precarga CIFRE (n)»: elimina de un golpe todos los registros de precarga (nube o local) sin tocar los fideicomisos capturados.
 - Export CSV del registro con columnas de precarga (puntaje y banda CIFRE, campo listas).
 - Registros guardados antes de v1.9 se leen con «No aplica» en ubicación: su puntaje estructural cambia por el repeso al reabrirlos y guardarlos.
 - Pendiente: captura de países de integrantes por nombre (tabla F4/F5 del banco).
