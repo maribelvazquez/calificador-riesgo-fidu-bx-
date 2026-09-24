@@ -762,7 +762,9 @@ function render(){
         <h3>Fideicomisos capturados</h3>
         <div class="tw"><table><thead><tr><th>ID</th><th>Fideicomiso</th><th>Partes</th><th>Estruct.</th>
           <th>Ponderado</th><th>Peor parte</th><th>Final</th><th>Banda</th><th>Actualizado</th><th>Próx. revisión</th><th></th></tr></thead>
-          <tbody>${REG.map((x,ri)=>({x,ri})).filter(v=>{if(!FILTRO)return true;const q=FILTRO.toLowerCase();
+          <tbody>${REG.map((x,ri)=>({x,ri})).filter(v=>{if(!FILTRO)return true;const q=FILTRO.toLowerCase().trim();
+            if(["bajo","medio","medio alto","alto","prohibitivo"].indexOf(q)>-1)return String(v.x.banda||"").toLowerCase()===q;
+            if(q==="precarga")return esPre(v.x);
             return String(v.x.id||"").toLowerCase().indexOf(q)>-1||String(v.x.nombre||"").toLowerCase().indexOf(q)>-1||String(v.x.banda||"").toLowerCase().indexOf(q)>-1;})
             .map(({x,ri:i})=>`<tr${i===EDIT?' style="outline:2px solid var(--brand-3);outline-offset:-2px"':""}><td>${esc(x.id||"—")}</td><td>${esc(x.nombre||"—")}</td>
             <td style="font-variant-numeric:tabular-nums">${x.nPartes}</td>

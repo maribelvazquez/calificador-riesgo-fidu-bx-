@@ -9,6 +9,7 @@
 - Cobertura de datos: % por fideicomiso en la captura y tablero «Cobertura de datos» en el registro (vehículos completos vs. con faltantes, precarga, datos faltantes más frecuentes por factor, integrantes con actividad no capturada y calificados por puntaje del banco).
 - Corrección: la carga masiva en modo nube ahora sí guarda en Firestore (en lotes de 400) y fecha cada registro; antes sólo quedaba en pantalla.
 - Botón «Quitar precarga CIFRE (n)»: elimina de un golpe todos los registros de precarga (nube o local) sin tocar los fideicomisos capturados.
+- Buscador: escribir el nombre exacto de una banda (ALTO, MEDIO ALTO, MEDIO, BAJO, PROHIBITIVO) filtra sólo esa banda; «precarga» muestra sólo los registros de la base CIFRE.
 - Export CSV del registro con columnas de precarga (puntaje y banda CIFRE, campo listas).
 - Registros guardados antes de v1.9 se leen con «No aplica» en ubicación: su puntaje estructural cambia por el repeso al reabrirlos y guardarlos.
 - Pendiente: captura de países de integrantes por nombre (tabla F4/F5 del banco).
