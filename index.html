@@ -152,6 +152,7 @@ aside{position:sticky;top:16px}
 .pr3{background:var(--surface-2);color:var(--ink-2)}
 .btn-o{padding:3px 9px;font-size:11px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.toolgrp{margin-top:14px;display:grid;gap:6px}.tg-t{font-size:12.5px;font-weight:700;color:var(--brand-2)}.tg-d{font-size:11.5px;color:var(--ink-3)}
 </style>
 
 <div class="wrap" id="root"></div>
@@ -795,31 +796,33 @@ function render(){
             <td style="white-space:nowrap"><button class="btn-o" data-open="${i}">Abrir</button>
             <button class="btn-x" data-delreg="${i}" title="Quitar">×</button></td></tr>`).join("")}
           </tbody></table></div>
-        <div class="rowtools"><button id="csv">Exportar registro a CSV</button>
-          <button id="bkp">Respaldar registro (.json)</button>
-          <button id="limpiar">Vaciar registro</button>
-          ${REG.some(esPre)?`<button id="quitapre">Quitar precarga CIFRE (${REG.filter(esPre).length})</button>`:""}</div>`
-        :`<div class="empty">Aún no hay fideicomisos guardados. Capture uno y presione “Guardar en el registro”,
-           o cargue varios desde un CSV.</div>`}
-        <div class="filerow" style="border-left:3px solid var(--brand-2);padding-left:8px">
-          <b style="font-size:12px">Carga desde el sistema del banco (layout v2.0):</b>
-          <button id="laybanco">Descargar layout del banco</button>
-          <button id="eqbanco">Ver equivalencias de claves</button>
-          <input type="file" id="impbanco" accept=".csv,text/csv" title="Cargar el layout del banco">
-          <span style="font-size:11px;color:var(--ink-3)">Una fila por fideicomiso, con los valores tal como salen del sistema (ZCALIFICA, ZVALF0011, Tipo, Producto…). La app traduce cada clave con la base de variables.</span>
+        <div class="toolgrp"><div class="tg-t">Guardar o sacar el registro</div>
+          <div class="rowtools">
+            <button id="csv" title="Descarga un CSV con la calificación de cada fideicomiso del registro">Exportar resultados (CSV)</button>
+            <button id="bkp" title="Descarga una copia completa del registro para poder restaurarla después">Respaldar registro</button>
+            <button id="limpiar" title="Borra todos los fideicomisos del registro de este navegador">Vaciar registro</button>
+            ${REG.some(esPre)?`<button id="quitapre">Quitar precarga CIFRE (${REG.filter(esPre).length})</button>`:""}</div></div>`
+        :`<div class="empty">Aún no hay fideicomisos en el registro. Cárguelos del sistema del banco (paso 1) o capture uno arriba y presione “Guardar en el registro”.</div>`}
+        <div class="toolgrp" style="border-left:3px solid var(--brand-2);padding-left:10px">
+          <div class="tg-t">1 · Cargar fideicomisos del banco</div>
+          <div class="tg-d">Elija el archivo CSV con los fideicomisos tal como salen del sistema del banco (una fila por fideicomiso). La app traduce cada clave y califica todos.</div>
+          <div class="filerow"><label for="impbanco" style="font-size:12px;font-weight:600">Archivo a cargar:</label>
+            <input type="file" id="impbanco" accept=".csv,text/csv"></div>
+          <div class="rowtools">
+            <button id="laybanco" title="Archivo vacío con las columnas que debe traer la extracción del banco">Descargar formato vacío</button>
+            <button id="eqbanco" title="Qué variable y nivel corresponde a cada clave del banco">Ver tabla de equivalencias</button></div>
         </div>
-        <div class="filerow">
-          <button id="plantilla">Descargar plantilla CSV</button>
-          ${location.protocol.indexOf("http")===0?`<a class="btnlink" href="plantillas/Layout_Carga_Fideicomisos_BX.xlsx" download>Layout de carga (Excel)</a>
-          <a class="btnlink" href="plantillas/Matriz_Riesgo_Fideicomisos_LexQuo_v2.6.xlsx" download>Matriz del modelo (Excel)</a>`:""}
-          <input type="file" id="imp" accept=".csv,text/csv" title="Importar captura masiva CSV">
-          <span style="font-size:11px;color:var(--ink-3)">Captura masiva: una fila por integrante, agrupa por ID.</span>
+        <div class="toolgrp"><div class="tg-t">2 · Recuperar un respaldo</div>
+          <div class="filerow"><label for="rest" style="font-size:12px;font-weight:600">Respaldo (.json):</label>
+            <input type="file" id="rest" accept=".json,application/json">
+            <span style="font-size:11px;color:var(--ink-3)">Actualiza los fideicomisos que ya existen y agrega los nuevos.</span></div>
         </div>
-        <div class="filerow">
-          <span style="font-size:11px;color:var(--ink-3)">Restaurar respaldo (.json):</span>
-          <input type="file" id="rest" accept=".json,application/json">
-          <span style="font-size:11px;color:var(--ink-3)">Combina por ID: actualiza los existentes y agrega los nuevos.</span>
-        </div>
+        <details class="toolgrp"><summary class="tg-t" style="cursor:pointer">Otras herramientas</summary>
+          ${location.protocol.indexOf("http")===0?`<div class="filerow"><a class="btnlink" href="plantillas/Matriz_Riesgo_Fideicomisos_LexQuo_v2.6.xlsx" download>Descargar la matriz del modelo (Excel)</a></div>`:""}
+          <div class="tg-d">Captura manual por integrante (formato anterior): una fila por persona, agrupada por número de fideicomiso. Sólo para capturar expedientes a mano.</div>
+          <div class="filerow"><button id="plantilla">Descargar formato por integrante</button>
+            <input type="file" id="imp" accept=".csv,text/csv" title="Cargar captura por integrante"></div>
+        </details>
       </div>
     </div>
     <aside>

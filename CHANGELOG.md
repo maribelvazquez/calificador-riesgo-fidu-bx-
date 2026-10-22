@@ -1,5 +1,8 @@
 # Changelog
 
+## v2.0.1 — 22-oct-2026
+- Botones de carga reorganizados y explicados: 1 · Cargar fideicomisos del banco, 2 · Recuperar un respaldo, Guardar o sacar el registro, y «Otras herramientas» (formato anterior por integrante y matriz en Excel). Se quita el enlace al layout v1.3, ya obsoleto.
+
 ## v2.0 — 22-oct-2026 · Matriz v2.6
 - Vehículo con sólo los factores que tienen dato en las bases de BX+: tipo de fideicomiso 30, actividad vulnerable 27, procedencia 19, antigüedad 13, USD 11. Patrimonio, valor, número de partes, operación distinta al fin y ubicación pasan a segunda fase (peso 0).
 - Riesgo heredado del banco como piso de la calificación (el mayor entre ZCALIFICA y SIPREV).
