@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.0 — 22-oct-2026 · Matriz v2.6
+- Vehículo con sólo los factores que tienen dato en las bases de BX+: tipo de fideicomiso 30, actividad vulnerable 27, procedencia 19, antigüedad 13, USD 11. Patrimonio, valor, número de partes, operación distinta al fin y ubicación pasan a segunda fase (peso 0).
+- Riesgo heredado del banco como piso de la calificación (el mayor entre ZCALIFICA y SIPREV).
+- Invalidaciones del fideicomiso: PEP (A1), reportes previos (A3), investigación adversa (A8, nueva) y prohibitiva (B). Investigación adversa también por integrante.
+- Nueva opción de tipo: administración inmobiliaria (desarrollo o arrendamiento), nivel 3.
+- Procedencia con las claves del factor F8 del banco (IN, EA, VP, OT…).
+- **Carga desde el sistema del banco (layout v2.0):** el archivo llega con los valores tal como salen del sistema (ZCALIFICA, NIVEL_SIPREV, ZVALF0011, ZVALF0021, Tipo, Producto, fecha de constitución…) y la app los traduce con las mismas equivalencias de la Matriz v2.6. Varias filas por fideicomiso se consolidan tomando el valor de mayor riesgo.
+- Botones para descargar el layout y la tabla de equivalencias.
+- Verificado: los 1,205 fideicomisos dan la misma calificación en la app y en la Matriz v2.6.
+
 ## v1.9 — 2026-09-24 (modelo acordado el 4 y 5 de septiembre + precarga de la base CIFRE)
 - Repeso del Bloque A (Matriz v2.4/v2.5): tipo 16 · patrimonio 10 · valor 11 · antigüedad 7 · partes 9 · actividad vulnerable 14 · procedencia 10 · USD 6 · operación distinta al fin 5 · ubicación del patrimonio 12 = 100.
 - Nuevo factor FF10 «Ubicación del patrimonio»: se captura el estado por nombre y toma su nivel de la tabla F7 del banco; bien en el extranjero = 4. Si el patrimonio no tiene ubicación física (efectivo, derechos) el factor no aplica y su peso se reparte entre los demás (renormaliza a 100).
@@ -9,6 +19,7 @@
 - Cobertura de datos: % por fideicomiso en la captura y tablero «Cobertura de datos» en el registro (vehículos completos vs. con faltantes, precarga, datos faltantes más frecuentes por factor, integrantes con actividad no capturada y calificados por puntaje del banco).
 - Corrección: la carga masiva en modo nube ahora sí guarda en Firestore (en lotes de 400) y fecha cada registro; antes sólo quedaba en pantalla.
 - Botón «Quitar precarga CIFRE (n)»: elimina de un golpe todos los registros de precarga (nube o local) sin tocar los fideicomisos capturados.
+- Buscador ampliado: además de ID, nombre y banda, busca en tipo de fideicomiso, patrimonio, valor, antigüedad, actividad vulnerable, procedencia, USD, operación distinta al fin, ubicación, actividad del fideicomiso y en nombre, rol, tipo de persona y actividad de los integrantes.
 - Buscador: escribir el nombre exacto de una banda (ALTO, MEDIO ALTO, MEDIO, BAJO, PROHIBITIVO) filtra sólo esa banda; «precarga» muestra sólo los registros de la base CIFRE.
 - Export CSV del registro con columnas de precarga (puntaje y banda CIFRE, campo listas).
 - Registros guardados antes de v1.9 se leen con «No aplica» en ubicación: su puntaje estructural cambia por el repeso al reabrirlos y guardarlos.
