@@ -800,7 +800,8 @@ function render(){
           <div class="rowtools">
             <button id="csv" title="Descarga un CSV con la calificación de cada fideicomiso del registro">Exportar resultados (CSV)</button>
             <button id="bkp" title="Descarga una copia completa del registro para poder restaurarla después">Respaldar registro</button>
-            <button id="limpiar" title="Borra todos los fideicomisos del registro de este navegador">Vaciar registro</button>
+            ${REG.some(esBanco)?`<button id="quitabanco" title="Borra sólo los fideicomisos que entraron con el archivo del banco; deja los capturados a mano">Quitar los cargados del banco (${REG.filter(esBanco).length})</button>`:""}
+            <button id="limpiar" title="Borra todos los fideicomisos del registro${MODO==="nube"?" compartido en la nube":" de este navegador"}">Vaciar registro${MODO==="nube"?" (nube)":""}</button>
             ${REG.some(esPre)?`<button id="quitapre">Quitar precarga CIFRE (${REG.filter(esPre).length})</button>`:""}</div></div>`
         :`<div class="empty">Aún no hay fideicomisos en el registro. Cárguelos del sistema del banco (paso 1) o capture uno arriba y presione “Guardar en el registro”.</div>`}
         <div class="toolgrp" style="border-left:3px solid var(--brand-2);padding-left:10px">
@@ -901,9 +902,8 @@ function bind(){
     else{REG.push(reg);F=nuevoFid();guarda("Guardado. Recuerde exportar el CSV al terminar.");}};
   document.getElementById("pdf").onclick=descargaPDF;
   const c=document.getElementById("csv");if(c)c.onclick=exportCSV;
-  const l=document.getElementById("limpiar");if(l)l.onclick=()=>{
-    if(confirm("¿Vaciar el registro de este navegador? No se puede deshacer."))
-    {REG=[];guarda("Registro vacío.")}};
+  const l=document.getElementById("limpiar");if(l)l.onclick=()=>borraRegistros(REG.slice(),"todos los fideicomisos del registro");
+  const qb=document.getElementById("quitabanco");if(qb)qb.onclick=()=>borraRegistros(REG.filter(esBanco),"los fideicomisos cargados del banco");
   const qp=document.getElementById("quitapre");if(qp)qp.onclick=async()=>{
     const pre=REG.filter(esPre);
     if(!confirm("¿Quitar los "+pre.length+" registros de precarga CIFRE? Los fideicomisos capturados no se tocan."))return;
@@ -1162,6 +1162,22 @@ function docHTMLNoUsado(){
    +'<script id="reg" type="application/json">'+JSON.stringify(REG).replace(/</g,'\\u003c')+'<\/script>'
    +'<script id="app-src" type="text/plain">'+src.replace(/<\/script/g,'<\\/script')+'<\/script>'
    +'<script>(new Function(document.getElementById("app-src").textContent))();<\/script></body></html>';
+}
+
+function esBanco(r){return !!(r&&(r.origen==="layout banco v2.0"||(r.fid&&r.fid.banco)));}
+// Borra un conjunto de registros. En la nube borra los documentos de Firestore en lotes; antes descarga un respaldo automático.
+async function borraRegistros(lista,que){
+  if(!lista.length){toast("No hay registros que borrar.");return}
+  const enNube=MODO==="nube";
+  const txt=prompt("Se van a borrar "+lista.length+" registros ("+que+")"+(enNube?" del registro COMPARTIDO en la nube: dejarán de verlos todos los usuarios":" de este navegador")+".\nAntes se descarga un respaldo automático.\n\nPara confirmar escriba BORRAR:");
+  if(!txt||txt.trim().toUpperCase()!=="BORRAR"){toast("No se borró nada.");return}
+  await descarga("respaldo_antes_de_borrar_"+new Date().toISOString().slice(0,10)+".json",JSON.stringify(lista,null,1),"application/json");
+  if(enNube){
+    try{const keys=lista.map(r=>r.key).filter(Boolean);
+      for(let i=0;i<keys.length;i+=400){const b=DB.batch();keys.slice(i,i+400).forEach(k=>b.delete(DB.collection("fideicomisos").doc(k)));await b.commit();}
+      EDIT=-1;toast(keys.length+" registros borrados de la nube. El respaldo quedó descargado.");}
+    catch(e){toast("No se pudo borrar en la nube: "+(e&&e.code?e.code:"error")+". Revise que su usuario tenga permiso.");}
+  }else{const ids=new Set(lista);REG=REG.filter(r=>!ids.has(r));EDIT=-1;guarda(lista.length+" registros borrados. El respaldo quedó descargado.");}
 }
 function guarda(msg){persiste();render();if(msg)toast(msg);}
 async function exportCSV(){

@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.0.2 — 22-oct-2026
+- «Vaciar registro» ahora también borra en la nube (antes sólo limpiaba la pantalla): pide escribir BORRAR, descarga un respaldo automático y borra en lotes.
+- Nuevo botón «Quitar los cargados del banco»: borra sólo lo que entró con el archivo del banco y deja lo capturado a mano. Sirve para recargar una extracción nueva.
+
 ## v2.0.1 — 22-oct-2026
 - Botones de carga reorganizados y explicados: 1 · Cargar fideicomisos del banco, 2 · Recuperar un respaldo, Guardar o sacar el registro, y «Otras herramientas» (formato anterior por integrante y matriz en Excel). Se quita el enlace al layout v1.3, ya obsoleto.
 
