@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.0.3 — 29-oct-2026
+- Actividad vulnerable: el valor "Confirmada BX+" (con o sin fracción: IV, V, V Bis, XV) se califica como AV confirmada Art. 17 (Tipo B, nivel 5). Viene de la validación de BX+ del 22-oct (32 de 34 fideicomisos confirmados).
+- Buscador: escribir "manual" muestra sólo los capturados a mano; "banco" sólo los cargados del banco.
+- Matriz v2.6 (plantilla): EQUIVALENCIAS agrega los valores "Confirmada BX+" y la BASE DE CARGA busca en el rango ampliado.
+
 ## v2.0.2 — 22-oct-2026
 - «Vaciar registro» ahora también borra en la nube (antes sólo limpiaba la pantalla): pide escribir BORRAR, descarga un respaldo automático y borra en lotes.
 - Nuevo botón «Quitar los cargados del banco»: borra sólo lo que entró con el archivo del banco y deja lo capturado a mano. Sirve para recargar una extracción nueva.

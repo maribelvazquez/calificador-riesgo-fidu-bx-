@@ -780,6 +780,7 @@ function render(){
           <tbody>${REG.map((x,ri)=>({x,ri})).filter(v=>{if(!FILTRO)return true;const q=FILTRO.toLowerCase().trim();
             if(["bajo","medio","medio alto","alto","prohibitivo"].indexOf(q)>-1)return String(v.x.banda||"").toLowerCase()===q;
             if(q==="precarga")return esPre(v.x);
+            if(q==="manual")return !esBanco(v.x);if(q==="banco")return esBanco(v.x);
             {const f=v.x.fid||{};const hay=[f.tipologia,f.patrimonio,f.valor,f.antig,f.av,f.proc,f.usd,f.desv,f.ubic,f.actividadFid]
               .concat((f.integrantes||[]).map(p=>[p.nombre,p.rol,p.actividad,p.tipoPersona].join(" "))).join(" ").toLowerCase();
               if(hay.indexOf(q)>-1)return true;}
@@ -1059,6 +1060,7 @@ function bTipo(t){const s=String(t||"").toLowerCase();
   if(s.includes("admin"))return "Administración";
   return ND;}
 function bAV(t){const s=String(t||"").toLowerCase().trim();if(!s)return ND;
+  if(s.startsWith("confirmada")||s.startsWith("validada bx"))return "AV confirmada Art. 17 (Tipo B)";
   if(s.startsWith("inferida")){if((s.includes("probable")&&!s.includes("no probable"))||s.includes("indicio"))return "En dictamen (Tipo C)";
     if(s.includes("no probable"))return "Sin actividad vulnerable (Tipo A)";return ND;}
   if(s.includes("sin av")||["no","ninguna","sin actividad vulnerable"].includes(s))return "Sin actividad vulnerable (Tipo A)";
@@ -1121,7 +1123,7 @@ async function equivBanco(){
   Object.entries(BANCO_F8).forEach(([k,v])=>L.push(["ZVALF0011_PROCEDENCIA",k,v[0],v[1]]));
   [["MXN","Sin USD ni parte extranjera"],["USD / EUR / CAD u otra","USD ocasional / parte extranjera"]].forEach(([k,v])=>L.push(["ZVALF0021_MONEDA",k,v,lvl("usd",v)]));
   [["Administración / Fideicomiso de Administración","Administración"],["Garantía / Fideicomiso de Garantía","Garantía"],["Inversión / Fideicomiso de Inversión","Inversión"],["Fuente de Pago / Fuente/Alterna de Pago","Fuente de pago"],["Inmobiliario (subtipo) / Arrendamiento","Administración inmobiliaria (desarrollo o arrendamiento)"],["Patrimonial / Testamentario (subtipo)","Testamentario / planeación patrimonial"],["Traslativo","Traslativo de dominio"],["Sustitución","Recibido por sustitución fiduciaria"],["Zona restringida","Zona restringida"]].forEach(([k,v])=>L.push(["TIPO / PRODUCTO / SUBTIPO_EXPEDIENTE",k,v,lvl("tipologia",v)]));
-  [["Desarrollo Inmobiliario","AV confirmada Art. 17 (Tipo B)"],["Arrendamiento / Revisar / Inferida: Sí probable o Indicio","En dictamen (Tipo C)"],["Sin AV en expediente / No / Inferida: No probable","Sin actividad vulnerable (Tipo A)"],["Vacío / Inferida: Sin elementos",ND]].forEach(([k,v])=>L.push(["ACTIVIDAD_VULNERABLE",k,v,lvl("av",v)]));
+  [["Desarrollo Inmobiliario / Confirmada BX+ (validación)","AV confirmada Art. 17 (Tipo B)"],["Arrendamiento / Revisar / Inferida: Sí probable o Indicio","En dictamen (Tipo C)"],["Sin AV en expediente / No / Inferida: No probable","Sin actividad vulnerable (Tipo A)"],["Vacío / Inferida: Sin elementos",ND]].forEach(([k,v])=>L.push(["ACTIVIDAD_VULNERABLE",k,v,lvl("av",v)]));
   [["menos de 1 año","Menos de 1 año"],["1 a menos de 3","1 a 3 años"],["3 a 10","3 a 10 años"],["más de 10","Más de 10 años"]].forEach(([k,v])=>L.push(["FECHA_CONSTITUCION (años)",k,v,lvl("antig",v)]));
   L.push(["ZVALF0004_PEP","S","Invalidación A1 (mínimo ALTO)",""],["ZVALF0023_REPORTES_PREVIOS","SI","Invalidación A3 (mínimo ALTO)",""],["INVESTIGACION_ADVERSA","SI","Invalidación A8 (mínimo ALTO)",""],["INVALIDACION_PROHIBITIVA","SI","Invalidación B (PROHIBITIVO)",""]);
   await descarga("equivalencias_claves_banco_v2.0.csv","﻿"+L.map(csvLine).join("\r\n"),"text/csv");}
