@@ -1,5 +1,10 @@
 # Changelog
 
+## v2.0.4 — 29-oct-2026
+- Las secciones «1 · Cargar fideicomisos del banco», «2 · Recuperar un respaldo» y «Guardar o sacar el registro» pasan arriba de la tabla del registro.
+- La tabla de fideicomisos tiene su propio desplazamiento con encabezado fijo; ya no hay que recorrer los 1,205 renglones para llegar a los botones.
+- Se retira el nombre «CIFRE» de los textos de la pantalla.
+
 ## v2.0.3 — 29-oct-2026
 - Actividad vulnerable: el valor "Confirmada BX+" (con o sin fracción: IV, V, V Bis, XV) se califica como AV confirmada Art. 17 (Tipo B, nivel 5). Viene de la validación de BX+ del 22-oct (32 de 34 fideicomisos confirmados).
 - Buscador: escribir "manual" muestra sólo los capturados a mano; "banco" sólo los cargados del banco.
