@@ -1238,9 +1238,10 @@ function anMig(){const t=document.getElementById("an-mig");if(!t)return;const B=
   const rows=AN_B.slice(0,4).concat(REG.some(x=>anHer(x)==="Sin riesgo del banco")?["Sin riesgo del banco"]:[]);
   const n=(a,b)=>REG.filter(x=>anHer(x)===a&&x.banda===b).length;
   const mx=Math.max(1,...rows.flatMap(a=>B.map(b=>n(a,b))));
-  t.innerHTML=`<thead><tr><th>Banco \\ Fiduciario</th>${B.map(b=>`<th style="text-align:center">${b}</th>`).join("")}</tr></thead><tbody>`+
+  t.innerHTML=`<thead><tr><th>Banco \\ Fiduciario</th>${B.map(b=>`<th style="text-align:center">${b}</th>`).join("")}<th style="text-align:center">Total</th></tr></thead><tbody>`+
     rows.map(a=>`<tr><td><b>${a}</b></td>${B.map(b=>{const v=n(a,b);const sube=AN_B.indexOf(b)>AN_B.indexOf(a)&&AN_B.indexOf(a)>-1;
-      return `<td data-ama="${a}" data-amb="${b}" tabindex="${v?0:-1}" style="text-align:center;font-weight:700;cursor:${v?"pointer":"default"};background:${v?`color-mix(in srgb, var(--brand-2) ${Math.round(6+v/mx*60)}%, transparent)`:"transparent"}">${v||"·"}${v&&sube?" ↑":""}</td>`}).join("")}</tr>`).join("")+"</tbody>";
+      return `<td data-ama="${a}" data-amb="${b}" tabindex="${v?0:-1}" style="text-align:center;font-weight:700;cursor:${v?"pointer":"default"};background:${v?`color-mix(in srgb, var(--brand-2) ${Math.round(6+v/mx*60)}%, transparent)`:"transparent"}">${v||"·"}${v&&sube?" ↑":""}</td>`}).join("")}<td style="text-align:center;font-weight:700;border-left:2px solid var(--line)">${REG.filter(x=>anHer(x)===a).length}</td></tr>`).join("")
+    +`<tr style="border-top:2px solid var(--line)"><td><b>Total</b></td>${B.map(b=>`<td style="text-align:center;font-weight:700">${REG.filter(x=>x.banda===b).length}</td>`).join("")}<td style="text-align:center;font-weight:700;border-left:2px solid var(--line)">${REG.length}</td></tr>`+"</tbody>";
   t.querySelectorAll("td[data-ama]").forEach(td=>{const go=()=>{const L=REG.filter(x=>anHer(x)===td.dataset.ama&&x.banda===td.dataset.amb);
     if(L.length)document.getElementById("an-mig-pick").innerHTML=`<b>${L.length} de ${td.dataset.ama} a ${td.dataset.amb}:</b> ${esc(anIds(L))}`;};
     td.onclick=go;td.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go()}}});}
