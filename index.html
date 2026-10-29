@@ -153,11 +153,14 @@ aside{position:sticky;top:16px}
 .btn-o{padding:3px 9px;font-size:11px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .toolgrp{margin-top:14px;display:grid;gap:6px}.tg-t{font-size:12.5px;font-weight:700;color:var(--brand-2)}.tg-d{font-size:11.5px;color:var(--ink-3)}
+.an-two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}.an-box{position:relative;height:280px}
+.an-b[aria-pressed="true"]{background:var(--brand-2);color:#fff;border-color:var(--brand-2)}.an-ctl{margin:4px 0 8px}
 .regtb thead th{position:sticky;top:0;background:var(--surface);z-index:1}
 </style>
 
 <div class="wrap" id="root"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script id="app-src" type="text/plain">
 // ---------- Catálogos (nivel 1-5) ----------
 // Factor F8 del modelo de clientes del banco: clave ZVALF0011 → [variable, nivel]
@@ -613,7 +616,7 @@ function render(){
           MODO==="login"?`<span class="tag t-V2" style="font-size:10px">NUBE · sin sesión</span>`:
           MODO==="cargando"?`<span class="tag t-AUTO" style="font-size:10px">Conectando…</span>`:
           FB_CONFIG?"":`<span class="tag t-V2" style="font-size:10px">MODO LOCAL</span>`}</div>
-      <h1>Calificador de riesgo fiduciario <span class="tag t-AUTO" style="font-size:11px;vertical-align:middle">v2.0 · Matriz v2.6</span></h1>
+      <h1>Calificador de riesgo fiduciario <span class="tag t-AUTO" style="font-size:11px;vertical-align:middle">v2.1 · Matriz v2.7</span></h1>
       <div class="sub">Grado de riesgo de cliente por fideicomiso y por integrante. Instrumento provisional
       mientras se libera el sistema — distinto e independiente de la MEBR de la entidad.
       <span class="credit">· Desarrollado por Lex Quo</span></div>
@@ -721,6 +724,7 @@ function render(){
           <b><span class="pr pr${r.pri}">${PRIN[r.pri]}</span>${esc(r.cod)} · ${esc(r.tit)}</b>
           ${esc(r.acc)}<small>Fundamento: ${esc(r.fun)}</small></div>`).join("")}
       </div>`})()}
+      ${REG.length?anHTML():""}
       <div class="card">
         <h2>Registro de fideicomisos</h2>
         <div class="rowtools" style="margin:2px 0 9px">
@@ -744,7 +748,7 @@ function render(){
             <span style="font-size:11px;color:var(--ink-3)">Actualiza los fideicomisos que ya existen y agrega los nuevos.</span></div>
         </div>
         <details class="toolgrp"><summary class="tg-t" style="cursor:pointer">Otras herramientas</summary>
-          ${location.protocol.indexOf("http")===0?`<div class="filerow"><a class="btnlink" href="plantillas/Matriz_Riesgo_Fideicomisos_LexQuo_v2.6.xlsx" download>Descargar la matriz del modelo (Excel)</a></div>`:""}
+          ${location.protocol.indexOf("http")===0?`<div class="filerow"><a class="btnlink" href="plantillas/Matriz_Riesgo_Fideicomisos_LexQuo_v2.7.xlsx" download>Descargar la matriz del modelo (Excel)</a></div>`:""}
           <div class="tg-d">Captura manual por integrante (formato anterior): una fila por persona, agrupada por número de fideicomiso. Sólo para capturar expedientes a mano.</div>
           <div class="filerow"><button id="plantilla">Descargar formato por integrante</button>
             <input type="file" id="imp" accept=".csv,text/csv" title="Cargar captura por integrante"></div>
@@ -858,6 +862,7 @@ function render(){
     </aside>
   </div>`;
   bind();
+  try{drawAnalisis()}catch(e){console.error(e)}
 }
 
 function bind(){
@@ -1168,6 +1173,98 @@ function docHTMLNoUsado(){
    +'<script id="app-src" type="text/plain">'+src.replace(/<\/script/g,'<\\/script')+'<\/script>'
    +'<script>(new Function(document.getElementById("app-src").textContent))();<\/script></body></html>';
 }
+
+// ---------- Análisis de riesgo interactivo (v2.1) ----------
+const AN={dim:"tipologia",uni:"all",pct:0,open:true,ch:{}};
+const AN_B=["BAJO","MEDIO","MEDIO ALTO","ALTO","PROHIBITIVO"];
+const AN_DIM=[["tipologia","Tipo de fideicomiso"],["av","Actividad vulnerable"],["antig","Antigüedad"],["proc","Procedencia"],["usd","Moneda extranjera"],["her","Riesgo del banco"]];
+function anHer(x){const h=+((x.fid&&x.fid.heredado)||0);return h>=100&&h<=500?banda(h):"Sin riesgo del banco";}
+function anVal(x,k){if(k==="her")return anHer(x);const v=(x.fid&&x.fid[k])||"";return v?String(v):"No determinado";}
+function anUp(x){const h=anHer(x);return AN_B.indexOf(h)>-1&&AN_B.indexOf(x.banda)>AN_B.indexOf(h);}
+function anHTML(){
+  const up=REG.filter(anUp).length,alt=REG.filter(x=>["MEDIO ALTO","ALTO","PROHIBITIVO"].indexOf(x.banda)>-1).length;
+  const altB=REG.filter(x=>["MEDIO ALTO","ALTO"].indexOf(anHer(x))>-1).length;
+  const btn=(attr,val,cur,txt)=>`<button class="an-b" ${attr}="${val}" aria-pressed="${String(val)===String(cur)}">${txt}</button>`;
+  return `<details class="card" id="an-card" ${AN.open?"open":""}><summary style="cursor:pointer"><h2 style="display:inline">Análisis de riesgo</h2>
+    <span style="font-size:12px;color:var(--ink-3);margin-left:8px">Gráficas interactivas · se recalculan con el registro</span></summary>
+    ${typeof Chart==="undefined"?`<div class="hint">Las gráficas necesitan conexión a internet para cargar.</div>`:""}
+    <div class="stats" style="margin-top:10px">
+      <div class="stat"><b>${REG.length}</b><span>Fideicomisos</span></div>
+      <div class="stat"><b>${alt}</b><span>Medio alto o más (banco: ${altB})</span></div>
+      <div class="stat"><b>${up}</b><span>Suben respecto al banco</span></div>
+      <div class="stat"><b>${REG.filter(x=>anHer(x)!=="Sin riesgo del banco"&&AN_B.indexOf(x.banda)<AN_B.indexOf(anHer(x))).length}</b><span>Bajan (debe ser 0)</span></div></div>
+    <h3>Banco contra fiduciario</h3>
+    <div class="an-two"><div class="an-box"><canvas id="an-band"></canvas></div>
+      <div style="min-width:0"><div class="tw"><table id="an-mig"></table></div>
+      <div class="hint">Renglón: nivel en el banco. Columna: nivel fiduciario. Clic en una celda para ver los fideicomisos.</div>
+      <div class="hint" id="an-mig-pick" aria-live="polite"></div></div></div>
+    <h3>Explorador por factor</h3>
+    <div class="rowtools an-ctl">${AN_DIM.map(([k,t])=>btn("data-andim",k,AN.dim,t)).join("")}</div>
+    <div class="rowtools an-ctl">${btn("data-anuni","all",AN.uni,"Todos")}${btn("data-anuni","up",AN.uni,"Sólo los que suben")}
+      <span style="width:12px"></span>${btn("data-anpct","0",AN.pct,"Número")}${btn("data-anpct","1",AN.pct,"Porcentaje")}</div>
+    <div class="an-box" style="height:340px"><canvas id="an-exp"></canvas></div>
+    <div class="hint" id="an-exp-pick" aria-live="polite">Clic en una barra para ver los fideicomisos.</div>
+    <div class="an-two"><div style="min-width:0"><h3>Puntajes</h3><div class="an-box"><canvas id="an-hist"></canvas></div>
+      <div class="hint">Cortes: 224 MEDIO · 259 MEDIO ALTO · 291 ALTO.</div></div>
+      <div style="min-width:0"><h3>Datos con que se califica</h3><div class="an-box"><canvas id="an-cov"></canvas></div>
+      <div class="hint">Sin dato cuenta 2.58 (límite superior de MEDIO).</div></div></div>
+  </details>`;
+}
+function anIds(L){return L.slice(0,60).map(x=>x.id).join(", ")+(L.length>60?"…":"");}
+function drawAnalisis(){
+  const card=document.getElementById("an-card");if(!card)return;
+  card.ontoggle=()=>{AN.open=card.open;if(card.open)drawAnalisis()};
+  document.querySelectorAll("[data-andim]").forEach(b=>b.onclick=()=>{AN.dim=b.dataset.andim;anCtl();anExp()});
+  document.querySelectorAll("[data-anuni]").forEach(b=>b.onclick=()=>{AN.uni=b.dataset.anuni;anCtl();anExp()});
+  document.querySelectorAll("[data-anpct]").forEach(b=>b.onclick=()=>{AN.pct=+b.dataset.anpct;anCtl();anExp()});
+  anMig();
+  if(typeof Chart==="undefined"||!card.open)return;
+  Object.values(AN.ch).forEach(c=>c&&c.destroy());AN.ch={};
+  anBand();anExp();anHist();anCov();
+}
+function anCtl(){document.querySelectorAll("[data-andim]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.andim===AN.dim));
+  document.querySelectorAll("[data-anuni]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.anuni===AN.uni));
+  document.querySelectorAll("[data-anpct]").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.anpct===AN.pct));}
+function anC(){const s=getComputedStyle(document.documentElement),g=v=>s.getPropertyValue(v).trim();
+  return{b:[g("--sem-1"),g("--sem-2"),g("--sem-3"),g("--sem-4"),"#7a1712"],ink:g("--ink-2")||"#555",line:g("--line")||"#ddd",soft:g("--surface-2")||"#eee"};}
+function anOpt(c){return{responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{labels:{color:c.ink,boxWidth:12}}},
+  scales:{x:{ticks:{color:c.ink},grid:{color:c.line}},y:{ticks:{color:c.ink},grid:{color:c.line},beginAtZero:true}}};}
+function anBands(){return AN_B.filter(b=>b!=="PROHIBITIVO"||REG.some(x=>x.banda===b));}
+function anBand(){const c=anC(),B=anBands();
+  AN.ch.band=new Chart(document.getElementById("an-band"),{type:"bar",data:{labels:B,datasets:[
+    {label:"Banco",data:B.map(b=>REG.filter(x=>anHer(x)===b).length),backgroundColor:c.soft,borderColor:c.ink,borderWidth:1},
+    {label:"Fiduciario",data:B.map(b=>REG.filter(x=>x.banda===b).length),backgroundColor:B.map((b,i)=>c.b[AN_B.indexOf(b)])}]},options:anOpt(c)});}
+function anMig(){const t=document.getElementById("an-mig");if(!t)return;const B=anBands();
+  const rows=AN_B.slice(0,4).concat(REG.some(x=>anHer(x)==="Sin riesgo del banco")?["Sin riesgo del banco"]:[]);
+  const n=(a,b)=>REG.filter(x=>anHer(x)===a&&x.banda===b).length;
+  const mx=Math.max(1,...rows.flatMap(a=>B.map(b=>n(a,b))));
+  t.innerHTML=`<thead><tr><th>Banco \\ Fiduciario</th>${B.map(b=>`<th style="text-align:center">${b}</th>`).join("")}</tr></thead><tbody>`+
+    rows.map(a=>`<tr><td><b>${a}</b></td>${B.map(b=>{const v=n(a,b);const sube=AN_B.indexOf(b)>AN_B.indexOf(a)&&AN_B.indexOf(a)>-1;
+      return `<td data-ama="${a}" data-amb="${b}" tabindex="${v?0:-1}" style="text-align:center;font-weight:700;cursor:${v?"pointer":"default"};background:${v?`color-mix(in srgb, var(--brand-2) ${Math.round(6+v/mx*60)}%, transparent)`:"transparent"}">${v||"·"}${v&&sube?" ↑":""}</td>`}).join("")}</tr>`).join("")+"</tbody>";
+  t.querySelectorAll("td[data-ama]").forEach(td=>{const go=()=>{const L=REG.filter(x=>anHer(x)===td.dataset.ama&&x.banda===td.dataset.amb);
+    if(L.length)document.getElementById("an-mig-pick").innerHTML=`<b>${L.length} de ${td.dataset.ama} a ${td.dataset.amb}:</b> ${esc(anIds(L))}`;};
+    td.onclick=go;td.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();go()}}});}
+function anExp(){if(typeof Chart==="undefined")return;const c=anC(),B=anBands();AN.ch.exp&&AN.ch.exp.destroy();
+  const S=AN.uni==="up"?REG.filter(anUp):REG;const m={};S.forEach(x=>{const v=anVal(x,AN.dim);m[v]=(m[v]||0)+1});
+  const cats=Object.keys(m).sort((a,b)=>m[b]-m[a]);const short=s=>s.length>38?s.slice(0,36)+"…":s;
+  const o=anOpt(c);o.indexAxis="y";o.scales.x.stacked=true;o.scales.y.stacked=true;o.scales.y.grid={display:false};
+  if(AN.pct){o.scales.x.max=100;o.scales.x.ticks.callback=v=>v+"%"}
+  o.plugins.tooltip={callbacks:{label:t=>{const v=S.filter(x=>anVal(x,AN.dim)===cats[t.dataIndex]&&x.banda===t.dataset.label).length;return `${t.dataset.label}: ${v} (${Math.round(v/m[cats[t.dataIndex]]*100)}%)`}}};
+  o.onClick=(e,els)=>{if(!els.length)return;const k=cats[els[0].index],b=B[els[0].datasetIndex];const L=S.filter(x=>anVal(x,AN.dim)===k&&x.banda===b);
+    document.getElementById("an-exp-pick").innerHTML=`<b>${L.length} · ${esc(k)} · ${b}:</b> ${esc(anIds(L))}`;};
+  AN.ch.exp=new Chart(document.getElementById("an-exp"),{type:"bar",data:{labels:cats.map(k=>`${short(k)} (${m[k]})`),
+    datasets:B.map(b=>({label:b,backgroundColor:c.b[AN_B.indexOf(b)],data:cats.map(k=>{const v=S.filter(x=>anVal(x,AN.dim)===k&&x.banda===b).length;return AN.pct?v/m[k]*100:v})}))},options:o});
+  document.getElementById("an-exp-pick").textContent=`${S.length} fideicomisos en este universo. Clic en una barra para ver cuáles.`;}
+function anHist(){const c=anC(),sc=REG.map(x=>+x.final||0).filter(Boolean);if(!sc.length)return;
+  const lo=Math.floor(Math.min(...sc)/10)*10,hi=Math.floor(Math.max(...sc)/10)*10;const bins=[];for(let v=lo;v<=hi;v+=10)bins.push(v);
+  const col=v=>c.b[AN_B.indexOf(banda(v+9))];const o=anOpt(c);o.plugins.legend={display:false};o.scales.x.grid={display:false};
+  AN.ch.hist=new Chart(document.getElementById("an-hist"),{type:"bar",data:{labels:bins.map(v=>v+"–"+(v+9)),
+    datasets:[{data:bins.map(v=>sc.filter(s=>s>=v&&s<v+10).length),backgroundColor:bins.map(col)}]},options:o});}
+function anCov(){const c=anC();const F=[["Riesgo del banco","her"],["Tipo de fideicomiso","tipologia"],["Antigüedad","antig"],["Procedencia","proc"],["Moneda","usd"],["Actividad vulnerable","av"]];
+  const sin=F.map(([,k])=>REG.filter(x=>{const v=anVal(x,k);return v==="No determinado"||v==="Sin riesgo del banco"}).length);
+  const o=anOpt(c);o.indexAxis="y";o.scales.x.stacked=true;o.scales.y.stacked=true;o.scales.x.max=REG.length;o.scales.y.grid={display:false};
+  AN.ch.cov=new Chart(document.getElementById("an-cov"),{type:"bar",data:{labels:F.map(f=>f[0]),datasets:[
+    {label:"Con dato",data:sin.map(s=>REG.length-s),backgroundColor:c.b[1]},{label:"Sin dato",data:sin,backgroundColor:c.soft}]},options:o});}
 
 function esBanco(r){return !!(r&&(r.origen==="layout banco v2.0"||(r.fid&&r.fid.banco)));}
 // Borra un conjunto de registros. En la nube borra los documentos de Firestore en lotes; antes descarga un respaldo automático.

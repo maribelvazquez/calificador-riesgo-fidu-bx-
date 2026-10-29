@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.1 — 29-oct-2026
+- Nueva sección «Análisis de riesgo» arriba del registro, con gráficas interactivas que se recalculan con los datos cargados: banco contra fiduciario, tabla de migración por nivel (clic en una celda muestra los fideicomisos), explorador por factor (tipo, actividad vulnerable, antigüedad, procedencia, moneda, riesgo del banco; en número o porcentaje; todos o sólo los que suben), histograma de puntajes y cobertura de datos.
+- Encabezado: v2.1 · Matriz v2.7. La descarga de la matriz apunta a la plantilla v2.7 (sin datos de clientes).
+
 ## v2.0.4 — 29-oct-2026
 - Las secciones «1 · Cargar fideicomisos del banco», «2 · Recuperar un respaldo» y «Guardar o sacar el registro» pasan arriba de la tabla del registro.
 - La tabla de fideicomisos tiene su propio desplazamiento con encabezado fijo; ya no hay que recorrer los 1,205 renglones para llegar a los botones.
